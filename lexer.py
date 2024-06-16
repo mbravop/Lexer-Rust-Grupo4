@@ -103,6 +103,21 @@ println!("No mayor");
 }
 '''
 
+algoritmo2 = '''
+    fn main() {
+        let mut contador = 1;
+
+        while contador <= 5 {
+            println!("El contador es: {}", contador);
+            contador += 1;
+        }
+
+        for numero in 1..=5 {
+            println!("El numero es: {}", numero);
+        }
+    }
+'''
+
 def ejecutarLexer(entradaLexer):
     salida = []
     lexer = lex.lex()
@@ -123,3 +138,4 @@ def crearLog(usuarioGit, entradaLexer):
     archivo.close()
 
 crearLog("mbravop",algoritmo)
+crearLog("DereckSantander",algoritmo2)
