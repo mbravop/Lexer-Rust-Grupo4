@@ -8,8 +8,6 @@ tokens = (
     'ID',
     'INTEGER',
     'FLOAT',
-    'CHAR',
-    'STRING',
     'PLUS',
     'MINUS',
     'MULT',
@@ -19,6 +17,7 @@ tokens = (
     'LPAREN',
     'RPAREN',
     'COLON',
+    'SEMICOLON',
     'GREATERTHAN',
     'LESSTHAN',
     'GREATEREQUALSTHAN', 
@@ -62,6 +61,7 @@ t_LBRACKET = r'\['
 t_RBRACKET = r'\]'
 t_LCURLYBRACKET = r'\{'
 t_RCURLYBRACKET = r'\}'
+t_SEMICOLON = r';'
 
 #Expresiones regulares para tokens complejos - Dereck Santander
 def t_ID(t):
@@ -78,14 +78,6 @@ def t_INTEGER(t):
     t.value = int(t.value)
     return t
 
-def t_CHAR(t):
-    r'[\w\W]$'
-    return t
-
-def t_STRING(t):
-    r'[\w\W]{2,}'
-    return t
-
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
@@ -98,33 +90,36 @@ def t_error(t):
     print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
-# Build the lexer
-lexer = lex.lex()
 
 # Test it out
-data = '''
-3 + 4 * 10
-  if else print abc123print_ 14.5
-  "hola" '&' {[}]/hola true
-  TRUE falSE false .ADADA
+algoritmo = '''fn main() {
+let num1 = 4;
+let num2 = 6;
+res = num1 + num2;
+if (res > 10){
+println!("Mayor que 10");
+}else{
+println!("No mayor");
+}
 '''
 
-# Give the lexer some input
-lexer.input(data)
-
-# Tokenize
-while True:
-    tok = lexer.token()
-    if not tok:
-        break      # No more input
-    print(tok)
-
+def ejecutarLexer(entradaLexer):
+    salida = []
+    lexer = lex.lex()
+    lexer.input(algoritmo)
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break  # No more input
+        salida.append(str(tok))
+    return "\n".join(salida)
 
 #Funcion para logs - Mauricio Bravo
-def crearLog(usuarioGit, salidaLexer):
+def crearLog(usuarioGit, entradaLexer):
     now = datetime.now()
     archivo = open("logs/lexico-"+usuarioGit+"-"+now.strftime("%d%m%Y-%Hh%M")+".txt","w")
-    archivo.write(salidaLexer)
+    archivo.write(entradaLexer+"\n")
+    archivo.write(ejecutarLexer(entradaLexer))
     archivo.close()
 
-
+crearLog("mbravop",algoritmo)
