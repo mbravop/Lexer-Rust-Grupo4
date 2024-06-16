@@ -1,7 +1,7 @@
 import ply.lex as lex
 from datetime import datetime
 #Palabras reservadas - Mauricio Bravo
-reserved = {'as':'AS','break':'BREAK','const':'CONST','continue':'CONTINUE','crate':'CRATE','else':'ELSE','enum':'ENUM','extern':'EXTERN','false':'FALSE','fn':'FN','for':'FOR','if':'IF','impl':'IMPL','in':'IN','let':'LET','loop':'LOOP','match':'MATCH','mod':'MOD','move':'MOVE','mut':'MUT','pub':'PUB','ref':'REF','return':'RETURN','self':'self','Self':'Self','static':'STATIC','struct':'STRUCT','super':'SUPER','trait':'TRAIT','true':'TRUE','type':'TYPE','unsafe':'UNSAFE','use':'USE','where':'WHERE','while':'WHILE','async':'ASYNC','await':'AWAIT','dyn':'DYN'}
+reserved = {'as':'AS','break':'BREAK','const':'CONST','continue':'CONTINUE','crate':'CRATE','else':'ELSE','enum':'ENUM','extern':'EXTERN','false':'FALSE','fn':'FN','for':'FOR','if':'IF','impl':'IMPL','in':'IN','let':'LET','loop':'LOOP','match':'MATCH','mod':'MOD','move':'MOVE','mut':'MUT','pub':'PUB','ref':'REF','return':'RETURN','self':'self','Self':'Self','static':'STATIC','struct':'STRUCT','super':'SUPER','trait':'TRAIT','true':'TRUE','type':'TYPE','unsafe':'UNSAFE','use':'USE','where':'WHERE','while':'WHILE','async':'ASYNC','await':'AWAIT','dyn':'DYN','print':'PRINT','println':'PRINTLN'}
 
 #lista de los tokens - Dereck Santander
 tokens = (
@@ -14,10 +14,11 @@ tokens = (
     'MINUS',
     'MULT',
     'DIVIDE',
-    'EQUALS',
+    'ASSIGN',
     'MODULE',
     'LPAREN',
     'RPAREN',
+    'COLON',
     'GREATERTHAN',
     'LESSTHAN',
     'GREATEREQUALSTHAN', 
@@ -30,18 +31,23 @@ tokens = (
     'LBRACKET',
     'RBRACKET',
     'LCURLYBRACKET',
-    'RCURLYBRACKET'
+    'RCURLYBRACKET',
+    'SINGLEQUOTE',
+    'DOUBLEQUOTE'
 ) + tuple(reserved.values())
 
-#Expresiones regulares para tokens simples - Dereck(8 tokens)
+#Expresiones regulares para tokens simples - Dereck
 t_PLUS = r'\+'
 t_MINUS = r'-'
 t_DIVIDE = r'\/'
-t_EQUALS = r'='
+t_ASSIGN = r'='
 t_MODULE = r'%'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
+t_COLON = r':'
 t_GREATERTHAN = r'>'
+t_SINGLEQUOTE = r'\''
+t_DOUBLEQUOTE = r'\"'
 #Expresiones regulares para tokens simples - Mauricio
 t_MULT = r'\*'
 t_LESSTHAN = r'<'
@@ -73,11 +79,11 @@ def t_INTEGER(t):
     return t
 
 def t_CHAR(t):
-    r'^\'[\w\W]\'$'
+    r'[\w\W]$'
     return t
 
 def t_STRING(t):
-    r'^\"[\w\W]{2,}\"$'
+    r'[\w\W]{2,}'
     return t
 
 def t_newline(t):
