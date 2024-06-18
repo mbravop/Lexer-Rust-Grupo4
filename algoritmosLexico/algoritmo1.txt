@@ -1,0 +1,9 @@
+fn main() {
+let num1 = 4;
+let num2 = 6;
+res = num1 + num2;
+if (res > 10){
+println!("Mayor que 10");
+}else{
+println!("No mayor");
+}
