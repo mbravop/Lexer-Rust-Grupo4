@@ -1,7 +1,7 @@
 import ply.lex as lex
 from datetime import datetime
 #Palabras reservadas - Mauricio Bravo
-reserved = {'as':'AS','break':'BREAK','const':'CONST','continue':'CONTINUE','crate':'CRATE','else':'ELSE','enum':'ENUM','extern':'EXTERN','false':'FALSE','fn':'FN','for':'FOR','if':'IF','impl':'IMPL','in':'IN','let':'LET','loop':'LOOP','match':'MATCH','mod':'MOD','move':'MOVE','mut':'MUT','pub':'PUB','ref':'REF','return':'RETURN','self':'self','Self':'Self','static':'STATIC','struct':'STRUCT','super':'SUPER','trait':'TRAIT','true':'TRUE','type':'TYPE','unsafe':'UNSAFE','use':'USE','where':'WHERE','while':'WHILE','async':'ASYNC','await':'AWAIT','dyn':'DYN','print':'PRINT','println':'PRINTLN'}
+reserved = {'as':'AS','break':'BREAK','const':'CONST','continue':'CONTINUE','crate':'CRATE','else':'ELSE','enum':'ENUM','extern':'EXTERN','false':'FALSE','fn':'FN','for':'FOR','if':'IF','impl':'IMPL','in':'IN','let':'LET','loop':'LOOP','match':'MATCH','mod':'MOD','move':'MOVE','mut':'MUT','pub':'PUB','ref':'REF','return':'RETURN','self':'self','Self':'Self','static':'STATIC','struct':'STRUCT','super':'SUPER','trait':'TRAIT','true':'TRUE','type':'TYPE','unsafe':'UNSAFE','use':'USE','where':'WHERE','while':'WHILE','async':'ASYNC','await':'AWAIT','dyn':'DYN','print':'PRINT','println':'PRINTLN','io':'IO','stdin':'STDIN','readline':'READLINE','std':'STD'}
 
 #lista de los tokens - Dereck Santander
 tokens = (
@@ -16,8 +16,10 @@ tokens = (
     'MODULE',
     'LPAREN',
     'RPAREN',
+    'DOT',
     'COLON',
     'SEMICOLON',
+    'DOUBLECOLON',
     'GREATERTHAN',
     'LESSTHAN',
     'GREATEREQUALSTHAN', 
@@ -47,6 +49,8 @@ t_COLON = r':'
 t_GREATERTHAN = r'>'
 t_SINGLEQUOTE = r'\''
 t_DOUBLEQUOTE = r'\"'
+t_DOUBLECOLON = r'::'
+t_DOT = r'\.'
 #Expresiones regulares para tokens simples - Mauricio
 t_MULT = r'\*'
 t_LESSTHAN = r'<'
