@@ -1,0 +1,203 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    AS
+    ASSIGN
+    ASYNC
+    AWAIT
+    BREAK
+    COLON
+    CONST
+    CONTINUE
+    CRATE
+    DOUBLEQUOTE
+    DYN
+    ELSE
+    ENUM
+    EQUALITY
+    EXTERN
+    FN
+    GREATERTHAN
+    IF
+    IMPL
+    INTEGER
+    LET
+    LOOP
+    MATCH
+    MODULE
+    MOVE
+    MULT
+    PRINT
+    PUB
+    RETURN
+    SEMICOLON
+    SINGLEQUOTE
+    STATIC
+    STRUCT
+    SUPER
+    Self
+    TRAIT
+    TYPE
+    UNSAFE
+    USE
+    WHERE
+    self
+
+Grammar
+
+Rule 0     S' -> codigo
+Rule 1     codigo -> expresionAritmetica
+Rule 2     codigo -> impresion
+Rule 3     codigo -> condiciones
+Rule 4     codigo -> asignacion
+Rule 5     codigo -> tupla
+Rule 6     codigo -> array
+Rule 7     codigo -> estrFor
+Rule 8     codigo -> estrWhile
+Rule 9     codigo -> input
+Rule 10    expresionAritmetica -> valor operador valor
+Rule 11    expresionAritmetica -> valor operador expresionAritmetica
+Rule 12    operador -> PLUS
+Rule 13    operador -> MINUS
+Rule 14    operador -> TIMES
+Rule 15    operador -> DIVIDE
+Rule 16    operador -> MOD
+Rule 17    valor -> INT
+Rule 18    valor -> FLOAT
+Rule 19    valor -> ID
+Rule 20    valores -> valor
+Rule 21    valores -> valor COMMA valores
+Rule 22    impresion -> PRINTLN NOT LPAREN valores RPAREN
+Rule 23    impresion -> PRINTLN NOT LPAREN valor RPAREN
+Rule 24    input -> STD DOUBLECOLON IO DOUBLECOLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN
+Rule 25    condicion -> valor operComp valor
+Rule 26    operComp -> MORETHAN
+Rule 27    operComp -> LESSTHAN
+Rule 28    operComp -> EQUITY
+Rule 29    operComp -> DIFFERENTFROM
+Rule 30    operComp -> GREATEREQUALSTHAN
+Rule 31    operComp -> LESSEQUALSTHAN
+Rule 32    condiciones -> condicion
+Rule 33    condiciones -> condicion conector condiciones
+Rule 34    condicion -> TRUE
+Rule 35    condicion -> FALSE
+Rule 36    conector -> AND
+Rule 37    conector -> OR
+Rule 38    asignacion -> ID EQUALS valor
+Rule 39    asignacion -> ID EQUALS condiciones
+Rule 40    asignacion -> ID EQUALS expresionAritmetica
+Rule 41    asignacion -> ID EQUALS estructuras
+Rule 42    estructuras -> tupla
+Rule 43    estructuras -> array
+Rule 44    tupla -> LPAREN valores RPAREN
+Rule 45    tupla -> LPAREN RPAREN
+Rule 46    array -> LBRACKET valores RBRACKET
+Rule 47    array -> LBRACKET RBRACKET
+Rule 48    estrWhile -> WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET
+Rule 49    estrFor -> FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET
+
+Terminals, with rules where they appear
+
+AND                  : 36
+AS                   : 
+ASSIGN               : 
+ASYNC                : 
+AWAIT                : 
+BREAK                : 
+COLON                : 
+CONST                : 
+CONTINUE             : 
+CRATE                : 
+DIFFERENTFROM        : 29
+DIVIDE               : 15
+DOT                  : 24
+DOUBLECOLON          : 24 24
+DOUBLEQUOTE          : 
+DYN                  : 
+ELSE                 : 
+ENUM                 : 
+EQUALITY             : 
+EXTERN               : 
+FALSE                : 35
+FLOAT                : 18
+FN                   : 
+FOR                  : 49
+GREATEREQUALSTHAN    : 30
+GREATERTHAN          : 
+ID                   : 19 24 38 39 40 41 49 49
+IF                   : 
+IMPL                 : 
+IN                   : 49
+INTEGER              : 
+IO                   : 24
+LBRACKET             : 46 47
+LCURLYBRACKET        : 48 49
+LESSEQUALSTHAN       : 31
+LESSTHAN             : 27
+LET                  : 
+LOOP                 : 
+LPAREN               : 22 23 24 24 44 45
+MATCH                : 
+MINUS                : 13
+MOD                  : 16
+MODULE               : 
+MOVE                 : 
+MULT                 : 
+MUT                  : 24
+NOT                  : 22 23
+OR                   : 37
+PLUS                 : 12
+PRINT                : 
+PRINTLN              : 22 23
+PUB                  : 
+RBRACKET             : 46 47
+RCURLYBRACKET        : 48 49
+READLINE             : 24
+REF                  : 24
+RETURN               : 
+RPAREN               : 22 23 24 24 44 45
+SEMICOLON            : 
+SINGLEQUOTE          : 
+STATIC               : 
+STD                  : 24
+STDIN                : 24
+STRUCT               : 
+SUPER                : 
+Self                 : 
+TRAIT                : 
+TRUE                 : 34
+TYPE                 : 
+UNSAFE               : 
+USE                  : 
+WHERE                : 
+WHILE                : 48
+error                : 
+self                 : 
+
+Nonterminals, with rules where they appear
+
+COMMA                : 21
+EQUALS               : 38 39 40 41
+EQUITY               : 28
+INT                  : 17
+MORETHAN             : 26
+TIMES                : 14
+array                : 6 43
+asignacion           : 4
+codigo               : 48 49 0
+condicion            : 32 33
+condiciones          : 3 33 39 48
+conector             : 33
+estrFor              : 7
+estrWhile            : 8
+estructuras          : 41
+expresionAritmetica  : 1 11 40
+impresion            : 2
+input                : 9
+operComp             : 25
+operador             : 10 11
+tupla                : 5 42
+valor                : 10 10 11 20 21 23 25 25 38
+valores              : 21 22 44 46
+
