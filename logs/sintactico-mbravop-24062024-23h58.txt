@@ -1,0 +1,2 @@
+lp > fn main(){let lista = [2,3,4]; let x = 5;while x < 6 {let suma = x + 10; let validar = suma > 11 || true; for elem in lista{let multiplicacion = multiplicacion * elem;}}println!(multiplicacion,suma);}
+None

@@ -8,14 +8,17 @@ def p_funcion(p):
 
 
 def p_codigo(p):
-    '''codigo : expresionAritmetica SEMICOLON
-              | impresion SEMICOLON
+    '''codigo : expresionAritmetica masCodigo
+              | impresion masCodigo
               | condiciones 
-              | asignacion SEMICOLON
+              | asignacion masCodigo
               | estrFor
               | estrWhile
-              | input SEMICOLON
-              | codigo'''
+              | input masCodigo'''
+
+def p_masCodigo(p):
+    '''masCodigo : SEMICOLON
+                | SEMICOLON codigo'''
 
 #expresiones aritméticas con uno o más operadores - Mauricio Bravo
 def p_expresionAritmetica(p):
@@ -40,8 +43,7 @@ def p_valores(p): # - Dereck Santander
                | valor COMMA valores'''
 
 def p_impresion(p): # - Dereck Santander
-    '''impresion : PRINTLN NOT LPAREN valores RPAREN
-                 | PRINTLN NOT LPAREN valor RPAREN'''
+    'impresion : PRINTLN NOT LPAREN valores RPAREN'
 
 
 #SOLICITUD DE DATOS POR TECLADO - Dereck Santander
@@ -100,10 +102,12 @@ def p_arrayVacio(p): # - Dereck Santander
 
 #declarar estructuras de control
 def p_estrWhile(p): # - Mauricio Bravo
-    'estrWhile : WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET'
+    '''estrWhile : WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET
+                 | WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET codigo '''
 
 def p_estrFor(p): # - Dereck Santander
-    'estrFor : FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET'
+    '''estrFor : FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET
+                | FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET codigo'''
 
 # Error rule for syntax errors
 def p_error(p):
@@ -133,5 +137,5 @@ def crearLogParser(usuarioGit):
             archivo.write(str(result)+"\n")
     archivo.close()
 
-#crearLogParser("mbravop")
-crearLogParser("DereckSantander")
+crearLogParser("mbravop")
+#crearLogParser("DereckSantander")
