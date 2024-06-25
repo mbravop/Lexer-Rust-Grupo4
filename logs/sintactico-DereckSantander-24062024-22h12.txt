@@ -1,0 +1,5 @@
+lp > fn main () { a + b ; }
+None
+lp > fn main () { println!(x); }
+None
+

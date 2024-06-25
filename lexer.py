@@ -20,7 +20,6 @@ tokens = (
     'DOT',
     'COLON',
     'SEMICOLON',
-    'DOUBLECOLON',
     'GREATERTHAN',
     'LESSTHAN',
     'GREATEREQUALSTHAN', 
@@ -50,7 +49,6 @@ t_COLON = r':'
 t_GREATERTHAN = r'>'
 t_SINGLEQUOTE = r'\''
 t_DOUBLEQUOTE = r'\"'
-t_DOUBLECOLON = r'::'
 t_DOT = r'\.'
 #Expresiones regulares para tokens simples - Mauricio
 t_COMMA = r','

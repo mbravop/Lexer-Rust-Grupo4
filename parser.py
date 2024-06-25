@@ -2,14 +2,20 @@ import ply.yacc as yacc
 from lexer import tokens
 from datetime import datetime
 
+#Funcion general - Dereck Santander
+def p_funcion(p):
+    '''funcion : FN ID LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKET'''
+
+
 def p_codigo(p):
-    '''codigo : expresionAritmetica SEMICOLON
+    '''codigo : expresionAritmetica 
               | impresion SEMICOLON
-              | condiciones SEMICOLON
-              | asignacion SEMICOLON
+              | condiciones 
+              | asignacion
               | estrFor
               | estrWhile
-              | input SEMICOLON'''
+              | input SEMICOLON
+              | codigo'''
 
 #expresiones aritméticas con uno o más operadores - Mauricio Bravo
 def p_expresionAritmetica(p):
@@ -40,7 +46,7 @@ def p_impresion(p): # - Dereck Santander
 
 #SOLICITUD DE DATOS POR TECLADO - Dereck Santander
 def p_input(p):
-    '''input : STD DOUBLECOLON IO DOUBLECOLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN'''
+    '''input : STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN'''
 
 #condiciones con uno o más conectores - Mauricio Bravo
 def p_condicion(p):
@@ -68,13 +74,13 @@ def p_conector(p): # - Mauricio Bravo
 
 #definición de variables, todos los tipos, almacena resultados de expresiones/condicionales - Dereck Santander
 def p_asignacion(p):
-    '''asignacion : ID ASSIGN valor
-                    | ID ASSIGN condiciones
-                    | ID ASSIGN expresionAritmetica'''
+    '''asignacion : LET ID ASSIGN valor
+                    | LET ID ASSIGN condiciones
+                    | LET ID ASSIGN expresionAritmetica'''
     
 #declarar estructuras de datos - Dereck Santander
 def p_asignacionEstructuras(p):
-    'asignacion : ID ASSIGN estructuras'
+    'asignacion : LET ID ASSIGN estructuras'
 
 def p_estructuras(p):# - Mauricio Bravo
     '''estructuras : tupla
@@ -127,4 +133,5 @@ def crearLogParser(usuarioGit):
             archivo.write(str(result)+"\n")
     archivo.close()
 
-crearLogParser("mbravop")
+#crearLogParser("mbravop")
+crearLogParser("DereckSantander")

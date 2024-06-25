@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'AND AS ASSIGN ASYNC AWAIT BREAK COLON COMMA CONST CONTINUE CRATE DIFFERENTFROM DIVIDE DOT DOUBLECOLON DOUBLEQUOTE DYN ELSE ENUM EQUALITY EXTERN FALSE FLOAT FN FOR GREATEREQUALSTHAN GREATERTHAN ID IF IMPL IN INTEGER IO LBRACKET LCURLYBRACKET LESSEQUALSTHAN LESSTHAN LET LOOP LPAREN MATCH MINUS MOD MODULE MOVE MULT MUT NOT OR PLUS PRINT PRINTLN PUB RBRACKET RCURLYBRACKET READLINE REF RETURN RPAREN SEMICOLON SINGLEQUOTE STATIC STD STDIN STRUCT SUPER Self TRAIT TRUE TYPE UNSAFE USE WHERE WHILE selfcodigo : expresionAritmetica SEMICOLON\n              | impresion SEMICOLON\n              | condiciones SEMICOLON\n              | asignacion SEMICOLON\n              | estrFor\n              | estrWhile\n              | input SEMICOLONexpresionAritmetica : valor operador valor\n                           | valor operador expresionAritmeticaoperador : PLUS\n                | MINUS\n                | MULT\n                | DIVIDE\n                | MODvalor : INTEGER\n             | FLOAT\n             | IDvalores : valor\n               | valor COMMA valoresimpresion : PRINTLN NOT LPAREN valores RPAREN\n                 | PRINTLN NOT LPAREN valor RPARENinput : STD DOUBLECOLON IO DOUBLECOLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPARENcondicion : valor operComp valoroperComp : GREATERTHAN\n                | LESSTHAN\n                | EQUALITY\n                | DIFFERENTFROM\n                | GREATEREQUALSTHAN\n                | LESSEQUALSTHANcondiciones : condicion\n                   | condicion conector condicionescondicion : TRUE\n                 | FALSEconector : AND\n                | ORasignacion : ID ASSIGN valor\n                    | ID ASSIGN condiciones\n                    | ID ASSIGN expresionAritmeticaasignacion : ID ASSIGN estructurasestructuras : tupla\n                    | arraytupla : LPAREN valores RPARENtupla : LPAREN RPARENarray : LBRACKET valores RBRACKETarray : LBRACKET RBRACKETestrWhile : WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKETestrFor : FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET'
+_lr_signature = 'AND AS ASSIGN ASYNC AWAIT BREAK COLON COMMA CONST CONTINUE CRATE DIFFERENTFROM DIVIDE DOT DOUBLEQUOTE DYN ELSE ENUM EQUALITY EXTERN FALSE FLOAT FN FOR GREATEREQUALSTHAN GREATERTHAN ID IF IMPL IN INTEGER IO LBRACKET LCURLYBRACKET LESSEQUALSTHAN LESSTHAN LET LOOP LPAREN MATCH MINUS MOD MODULE MOVE MULT MUT NOT OR PLUS PRINT PRINTLN PUB RBRACKET RCURLYBRACKET READLINE REF RETURN RPAREN SEMICOLON SINGLEQUOTE STATIC STD STDIN STRUCT SUPER Self TRAIT TRUE TYPE UNSAFE USE WHERE WHILE selffuncion : FN ID LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKETcodigo : expresionAritmetica \n              | impresion SEMICOLON\n              | condiciones \n              | asignacion\n              | estrFor\n              | estrWhile\n              | input SEMICOLON\n              | codigoexpresionAritmetica : valor operador valor\n                           | valor operador expresionAritmeticaoperador : PLUS\n                | MINUS\n                | MULT\n                | DIVIDE\n                | MODvalor : INTEGER\n             | FLOAT\n             | IDvalores : valor\n               | valor COMMA valoresimpresion : PRINTLN NOT LPAREN valores RPAREN\n                 | PRINTLN NOT LPAREN valor RPARENinput : STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPARENcondicion : valor operComp valoroperComp : GREATERTHAN\n                | LESSTHAN\n                | EQUALITY\n                | DIFFERENTFROM\n                | GREATEREQUALSTHAN\n                | LESSEQUALSTHANcondiciones : condicion\n                   | condicion conector condicionescondicion : TRUE\n                 | FALSEconector : AND\n                | ORasignacion : LET ID ASSIGN valor\n                    | LET ID ASSIGN condiciones\n                    | LET ID ASSIGN expresionAritmeticaasignacion : LET ID ASSIGN estructurasestructuras : tupla\n                    | arraytupla : LPAREN valores RPARENtupla : LPAREN RPARENarray : LBRACKET valores RBRACKETarray : LBRACKET RBRACKETestrWhile : WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKETestrFor : FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET'
     
-_lr_action_items = {'PRINTLN':([0,62,79,],[10,10,10,]),'ID':([0,13,14,25,26,27,28,29,30,31,32,33,34,35,36,37,39,40,41,42,51,59,60,61,62,76,79,91,],[12,43,46,46,46,-10,-11,-12,-13,-14,-24,-25,-26,-27,-28,-29,46,-34,-35,46,46,46,46,71,12,46,12,92,]),'FOR':([0,62,79,],[13,13,13,]),'WHILE':([0,62,79,],[14,14,14,]),'STD':([0,62,79,],[15,15,15,]),'INTEGER':([0,14,25,26,27,28,29,30,31,32,33,34,35,36,37,39,40,41,42,51,59,60,62,76,79,],[16,16,16,16,-10,-11,-12,-13,-14,-24,-25,-26,-27,-28,-29,16,-34,-35,16,16,16,16,16,16,16,]),'FLOAT':([0,14,25,26,27,28,29,30,31,32,33,34,35,36,37,39,40,41,42,51,59,60,62,76,79,],[17,17,17,17,-10,-11,-12,-13,-14,-24,-25,-26,-27,-28,-29,17,-34,-35,17,17,17,17,17,17,17,]),'TRUE':([0,14,39,40,41,42,62,79,],[18,18,18,-34,-35,18,18,18,]),'FALSE':([0,14,39,40,41,42,62,79,],[19,19,19,-34,-35,19,19,19,]),'$end':([1,6,7,20,21,22,23,24,80,85,],[0,-5,-6,-1,-2,-3,-4,-7,-46,-47,]),'SEMICOLON':([2,3,4,5,8,11,16,17,18,19,46,48,49,50,52,53,54,55,56,57,58,67,70,74,75,77,78,93,],[20,21,22,23,24,-30,-15,-16,-32,-33,-17,-8,-9,-23,-31,-36,-37,-38,-39,-40,-41,-43,-45,-20,-21,-42,-44,-22,]),'RCURLYBRACKET':([6,7,20,21,22,23,24,72,80,83,85,],[-5,-6,-1,-2,-3,-4,-7,80,-46,85,-47,]),'PLUS':([9,12,16,17,46,48,53,],[27,-17,-15,-16,-17,27,27,]),'MINUS':([9,12,16,17,46,48,53,],[28,-17,-15,-16,-17,28,28,]),'MULT':([9,12,16,17,46,48,53,],[29,-17,-15,-16,-17,29,29,]),'DIVIDE':([9,12,16,17,46,48,53,],[30,-17,-15,-16,-17,30,30,]),'MOD':([9,12,16,17,46,48,53,],[31,-17,-15,-16,-17,31,31,]),'GREATERTHAN':([9,12,16,17,45,46,53,],[32,-17,-15,-16,32,-17,32,]),'LESSTHAN':([9,12,16,17,45,46,53,],[33,-17,-15,-16,33,-17,33,]),'EQUALITY':([9,12,16,17,45,46,53,],[34,-17,-15,-16,34,-17,34,]),'DIFFERENTFROM':([9,12,16,17,45,46,53,],[35,-17,-15,-16,35,-17,35,]),'GREATEREQUALSTHAN':([9,12,16,17,45,46,53,],[36,-17,-15,-16,36,-17,36,]),'LESSEQUALSTHAN':([9,12,16,17,45,46,53,],[37,-17,-15,-16,37,-17,37,]),'NOT':([10,],[38,]),'LCURLYBRACKET':([11,16,17,18,19,44,46,50,52,71,],[-30,-15,-16,-32,-33,62,-17,-23,-31,79,]),'AND':([11,16,17,18,19,46,50,],[40,-15,-16,-32,-33,-17,-23,]),'OR':([11,16,17,18,19,46,50,],[41,-15,-16,-32,-33,-17,-23,]),'ASSIGN':([12,],[42,]),'DOUBLECOLON':([15,63,],[47,73,]),'RPAREN':([16,17,46,59,64,65,66,68,82,84,92,],[-15,-16,-17,67,74,75,77,-18,-19,86,93,]),'COMMA':([16,17,46,65,68,],[-15,-16,-17,76,76,]),'RBRACKET':([16,17,46,60,68,69,82,],[-15,-16,-17,70,-18,78,-19,]),'LPAREN':([38,42,81,88,],[51,59,84,89,]),'LBRACKET':([42,],[60,]),'IN':([43,],[61,]),'IO':([47,],[63,]),'STDIN':([73,],[81,]),'DOT':([86,],[87,]),'READLINE':([87,],[88,]),'REF':([89,],[90,]),'MUT':([90,],[91,]),}
+_lr_action_items = {'FN':([0,],[2,]),'$end':([1,27,],[0,-1,]),'ID':([2,6,19,20,21,30,31,32,33,34,35,36,37,38,39,40,41,42,44,45,46,55,57,58,59,69,70,76,82,98,],[3,7,47,48,7,7,7,-12,-13,-14,-15,-16,-26,-27,-28,-29,-30,-31,7,-36,-37,7,7,71,7,7,7,7,7,99,]),'LPAREN':([3,43,57,91,95,],[4,55,69,92,96,]),'RPAREN':([4,7,23,24,61,62,69,77,79,85,92,99,],[5,-19,-17,-18,74,75,78,86,-20,-21,93,100,]),'LCURLYBRACKET':([5,7,18,23,24,25,26,49,54,56,71,],[6,-19,-32,-17,-18,-34,-35,59,-25,-33,82,]),'PRINTLN':([6,59,82,],[17,17,17,]),'LET':([6,59,82,],[19,19,19,]),'FOR':([6,59,82,],[20,20,20,]),'WHILE':([6,59,82,],[21,21,21,]),'STD':([6,59,82,],[22,22,22,]),'INTEGER':([6,21,30,31,32,33,34,35,36,37,38,39,40,41,42,44,45,46,55,57,59,69,70,76,82,],[23,23,23,23,-12,-13,-14,-15,-16,-26,-27,-28,-29,-30,-31,23,-36,-37,23,23,23,23,23,23,23,]),'FLOAT':([6,21,30,31,32,33,34,35,36,37,38,39,40,41,42,44,45,46,55,57,59,69,70,76,82,],[24,24,24,24,-12,-13,-14,-15,-16,-26,-27,-28,-29,-30,-31,24,-36,-37,24,24,24,24,24,24,24,]),'TRUE':([6,21,44,45,46,57,59,82,],[25,25,25,-36,-37,25,25,25,]),'FALSE':([6,21,44,45,46,57,59,82,],[26,26,26,-36,-37,26,26,26,]),'PLUS':([7,16,23,24,52,63,],[-19,32,-17,-18,32,32,]),'MINUS':([7,16,23,24,52,63,],[-19,33,-17,-18,33,33,]),'MULT':([7,16,23,24,52,63,],[-19,34,-17,-18,34,34,]),'DIVIDE':([7,16,23,24,52,63,],[-19,35,-17,-18,35,35,]),'MOD':([7,16,23,24,52,63,],[-19,36,-17,-18,36,36,]),'GREATERTHAN':([7,16,23,24,50,63,],[-19,37,-17,-18,37,37,]),'LESSTHAN':([7,16,23,24,50,63,],[-19,38,-17,-18,38,38,]),'EQUALITY':([7,16,23,24,50,63,],[-19,39,-17,-18,39,39,]),'DIFFERENTFROM':([7,16,23,24,50,63,],[-19,40,-17,-18,40,40,]),'GREATEREQUALSTHAN':([7,16,23,24,50,63,],[-19,41,-17,-18,41,41,]),'LESSEQUALSTHAN':([7,16,23,24,50,63,],[-19,42,-17,-18,42,42,]),'RCURLYBRACKET':([7,8,9,11,12,13,14,18,23,24,25,26,28,29,52,53,54,56,63,64,65,66,67,68,72,78,81,83,86,87,88,90,],[-19,27,-2,-4,-5,-6,-7,-32,-17,-18,-34,-35,-3,-8,-10,-11,-25,-33,-38,-39,-40,-41,-42,-43,83,-45,-47,-48,-44,-46,90,-49,]),'AND':([7,18,23,24,25,26,54,],[-19,45,-17,-18,-34,-35,-25,]),'OR':([7,18,23,24,25,26,54,],[-19,46,-17,-18,-34,-35,-25,]),'COMMA':([7,23,24,62,79,],[-19,-17,-18,76,76,]),'RBRACKET':([7,23,24,70,79,80,85,],[-19,-17,-18,81,-20,87,-21,]),'SEMICOLON':([10,15,74,75,100,],[28,29,-22,-23,-24,]),'NOT':([17,],[43,]),'COLON':([22,51,73,84,],[51,60,84,89,]),'ASSIGN':([47,],[57,]),'IN':([48,],[58,]),'LBRACKET':([57,],[70,]),'IO':([60,],[73,]),'STDIN':([89,],[91,]),'DOT':([93,],[94,]),'READLINE':([94,],[95,]),'REF':([96,],[97,]),'MUT':([97,],[98,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'codigo':([0,62,79,],[1,72,83,]),'expresionAritmetica':([0,25,42,62,79,],[2,49,55,2,2,]),'impresion':([0,62,79,],[3,3,3,]),'condiciones':([0,14,39,42,62,79,],[4,44,52,54,4,4,]),'asignacion':([0,62,79,],[5,5,5,]),'estrFor':([0,62,79,],[6,6,6,]),'estrWhile':([0,62,79,],[7,7,7,]),'input':([0,62,79,],[8,8,8,]),'valor':([0,14,25,26,39,42,51,59,60,62,76,79,],[9,45,48,50,45,53,65,68,68,9,68,9,]),'condicion':([0,14,39,42,62,79,],[11,11,11,11,11,11,]),'operador':([9,48,53,],[25,25,25,]),'operComp':([9,45,53,],[26,26,26,]),'conector':([11,],[39,]),'estructuras':([42,],[56,]),'tupla':([42,],[57,]),'array':([42,],[58,]),'valores':([51,59,60,76,],[64,66,69,82,]),}
+_lr_goto_items = {'funcion':([0,],[1,]),'codigo':([6,59,82,],[8,72,88,]),'expresionAritmetica':([6,30,57,59,82,],[9,53,65,9,9,]),'impresion':([6,59,82,],[10,10,10,]),'condiciones':([6,21,44,57,59,82,],[11,49,56,64,11,11,]),'asignacion':([6,59,82,],[12,12,12,]),'estrFor':([6,59,82,],[13,13,13,]),'estrWhile':([6,59,82,],[14,14,14,]),'input':([6,59,82,],[15,15,15,]),'valor':([6,21,30,31,44,55,57,59,69,70,76,82,],[16,50,52,54,50,62,63,16,79,79,79,16,]),'condicion':([6,21,44,57,59,82,],[18,18,18,18,18,18,]),'operador':([16,52,63,],[30,30,30,]),'operComp':([16,50,63,],[31,31,31,]),'conector':([18,],[44,]),'valores':([55,69,70,76,],[61,77,80,85,]),'estructuras':([57,],[66,]),'tupla':([57,],[67,]),'array':([57,],[68,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,52 +26,54 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> codigo","S'",1,None,None,None),
-  ('codigo -> expresionAritmetica SEMICOLON','codigo',2,'p_codigo','parser.py',5),
-  ('codigo -> impresion SEMICOLON','codigo',2,'p_codigo','parser.py',6),
-  ('codigo -> condiciones SEMICOLON','codigo',2,'p_codigo','parser.py',7),
-  ('codigo -> asignacion SEMICOLON','codigo',2,'p_codigo','parser.py',8),
-  ('codigo -> estrFor','codigo',1,'p_codigo','parser.py',9),
-  ('codigo -> estrWhile','codigo',1,'p_codigo','parser.py',10),
-  ('codigo -> input SEMICOLON','codigo',2,'p_codigo','parser.py',11),
-  ('expresionAritmetica -> valor operador valor','expresionAritmetica',3,'p_expresionAritmetica','parser.py',15),
-  ('expresionAritmetica -> valor operador expresionAritmetica','expresionAritmetica',3,'p_expresionAritmetica','parser.py',16),
-  ('operador -> PLUS','operador',1,'p_operador','parser.py',19),
-  ('operador -> MINUS','operador',1,'p_operador','parser.py',20),
-  ('operador -> MULT','operador',1,'p_operador','parser.py',21),
-  ('operador -> DIVIDE','operador',1,'p_operador','parser.py',22),
-  ('operador -> MOD','operador',1,'p_operador','parser.py',23),
-  ('valor -> INTEGER','valor',1,'p_valor','parser.py',27),
-  ('valor -> FLOAT','valor',1,'p_valor','parser.py',28),
-  ('valor -> ID','valor',1,'p_valor','parser.py',29),
-  ('valores -> valor','valores',1,'p_valores','parser.py',32),
-  ('valores -> valor COMMA valores','valores',3,'p_valores','parser.py',33),
-  ('impresion -> PRINTLN NOT LPAREN valores RPAREN','impresion',5,'p_impresion','parser.py',36),
-  ('impresion -> PRINTLN NOT LPAREN valor RPAREN','impresion',5,'p_impresion','parser.py',37),
-  ('input -> STD DOUBLECOLON IO DOUBLECOLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN','input',14,'p_input','parser.py',42),
-  ('condicion -> valor operComp valor','condicion',3,'p_condicion','parser.py',46),
-  ('operComp -> GREATERTHAN','operComp',1,'p_operComp','parser.py',49),
-  ('operComp -> LESSTHAN','operComp',1,'p_operComp','parser.py',50),
-  ('operComp -> EQUALITY','operComp',1,'p_operComp','parser.py',51),
-  ('operComp -> DIFFERENTFROM','operComp',1,'p_operComp','parser.py',52),
-  ('operComp -> GREATEREQUALSTHAN','operComp',1,'p_operComp','parser.py',53),
-  ('operComp -> LESSEQUALSTHAN','operComp',1,'p_operComp','parser.py',54),
-  ('condiciones -> condicion','condiciones',1,'p_condiciones','parser.py',57),
-  ('condiciones -> condicion conector condiciones','condiciones',3,'p_condiciones','parser.py',58),
-  ('condicion -> TRUE','condicion',1,'p_condicionBool','parser.py',61),
-  ('condicion -> FALSE','condicion',1,'p_condicionBool','parser.py',62),
-  ('conector -> AND','conector',1,'p_conector','parser.py',65),
-  ('conector -> OR','conector',1,'p_conector','parser.py',66),
-  ('asignacion -> ID ASSIGN valor','asignacion',3,'p_asignacion','parser.py',70),
-  ('asignacion -> ID ASSIGN condiciones','asignacion',3,'p_asignacion','parser.py',71),
-  ('asignacion -> ID ASSIGN expresionAritmetica','asignacion',3,'p_asignacion','parser.py',72),
-  ('asignacion -> ID ASSIGN estructuras','asignacion',3,'p_asignacionEstructuras','parser.py',76),
-  ('estructuras -> tupla','estructuras',1,'p_estructuras','parser.py',79),
-  ('estructuras -> array','estructuras',1,'p_estructuras','parser.py',80),
-  ('tupla -> LPAREN valores RPAREN','tupla',3,'p_tupla','parser.py',83),
-  ('tupla -> LPAREN RPAREN','tupla',2,'p_tuplaVacia','parser.py',86),
-  ('array -> LBRACKET valores RBRACKET','array',3,'p_array','parser.py',89),
-  ('array -> LBRACKET RBRACKET','array',2,'p_arrayVacio','parser.py',92),
-  ('estrWhile -> WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET','estrWhile',5,'p_estrWhile','parser.py',96),
-  ('estrFor -> FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET','estrFor',7,'p_estrFor','parser.py',99),
+  ("S' -> funcion","S'",1,None,None,None),
+  ('funcion -> FN ID LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKET','funcion',7,'p_funcion','parser.py',7),
+  ('codigo -> expresionAritmetica','codigo',1,'p_codigo','parser.py',11),
+  ('codigo -> impresion SEMICOLON','codigo',2,'p_codigo','parser.py',12),
+  ('codigo -> condiciones','codigo',1,'p_codigo','parser.py',13),
+  ('codigo -> asignacion','codigo',1,'p_codigo','parser.py',14),
+  ('codigo -> estrFor','codigo',1,'p_codigo','parser.py',15),
+  ('codigo -> estrWhile','codigo',1,'p_codigo','parser.py',16),
+  ('codigo -> input SEMICOLON','codigo',2,'p_codigo','parser.py',17),
+  ('codigo -> codigo','codigo',1,'p_codigo','parser.py',18),
+  ('expresionAritmetica -> valor operador valor','expresionAritmetica',3,'p_expresionAritmetica','parser.py',22),
+  ('expresionAritmetica -> valor operador expresionAritmetica','expresionAritmetica',3,'p_expresionAritmetica','parser.py',23),
+  ('operador -> PLUS','operador',1,'p_operador','parser.py',26),
+  ('operador -> MINUS','operador',1,'p_operador','parser.py',27),
+  ('operador -> MULT','operador',1,'p_operador','parser.py',28),
+  ('operador -> DIVIDE','operador',1,'p_operador','parser.py',29),
+  ('operador -> MOD','operador',1,'p_operador','parser.py',30),
+  ('valor -> INTEGER','valor',1,'p_valor','parser.py',34),
+  ('valor -> FLOAT','valor',1,'p_valor','parser.py',35),
+  ('valor -> ID','valor',1,'p_valor','parser.py',36),
+  ('valores -> valor','valores',1,'p_valores','parser.py',39),
+  ('valores -> valor COMMA valores','valores',3,'p_valores','parser.py',40),
+  ('impresion -> PRINTLN NOT LPAREN valores RPAREN','impresion',5,'p_impresion','parser.py',43),
+  ('impresion -> PRINTLN NOT LPAREN valor RPAREN','impresion',5,'p_impresion','parser.py',44),
+  ('input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN','input',16,'p_input','parser.py',49),
+  ('condicion -> valor operComp valor','condicion',3,'p_condicion','parser.py',53),
+  ('operComp -> GREATERTHAN','operComp',1,'p_operComp','parser.py',56),
+  ('operComp -> LESSTHAN','operComp',1,'p_operComp','parser.py',57),
+  ('operComp -> EQUALITY','operComp',1,'p_operComp','parser.py',58),
+  ('operComp -> DIFFERENTFROM','operComp',1,'p_operComp','parser.py',59),
+  ('operComp -> GREATEREQUALSTHAN','operComp',1,'p_operComp','parser.py',60),
+  ('operComp -> LESSEQUALSTHAN','operComp',1,'p_operComp','parser.py',61),
+  ('condiciones -> condicion','condiciones',1,'p_condiciones','parser.py',64),
+  ('condiciones -> condicion conector condiciones','condiciones',3,'p_condiciones','parser.py',65),
+  ('condicion -> TRUE','condicion',1,'p_condicionBool','parser.py',68),
+  ('condicion -> FALSE','condicion',1,'p_condicionBool','parser.py',69),
+  ('conector -> AND','conector',1,'p_conector','parser.py',72),
+  ('conector -> OR','conector',1,'p_conector','parser.py',73),
+  ('asignacion -> LET ID ASSIGN valor','asignacion',4,'p_asignacion','parser.py',77),
+  ('asignacion -> LET ID ASSIGN condiciones','asignacion',4,'p_asignacion','parser.py',78),
+  ('asignacion -> LET ID ASSIGN expresionAritmetica','asignacion',4,'p_asignacion','parser.py',79),
+  ('asignacion -> LET ID ASSIGN estructuras','asignacion',4,'p_asignacionEstructuras','parser.py',83),
+  ('estructuras -> tupla','estructuras',1,'p_estructuras','parser.py',86),
+  ('estructuras -> array','estructuras',1,'p_estructuras','parser.py',87),
+  ('tupla -> LPAREN valores RPAREN','tupla',3,'p_tupla','parser.py',90),
+  ('tupla -> LPAREN RPAREN','tupla',2,'p_tuplaVacia','parser.py',93),
+  ('array -> LBRACKET valores RBRACKET','array',3,'p_array','parser.py',96),
+  ('array -> LBRACKET RBRACKET','array',2,'p_arrayVacio','parser.py',99),
+  ('estrWhile -> WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET','estrWhile',5,'p_estrWhile','parser.py',103),
+  ('estrFor -> FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET','estrFor',7,'p_estrFor','parser.py',106),
 ]
