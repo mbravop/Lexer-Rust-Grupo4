@@ -1,12 +1,12 @@
 import ply.yacc as yacc
 from lexer import tokens
+from datetime import datetime
 
 def p_codigo(p):
     '''codigo : expresionAritmetica SEMICOLON
               | impresion SEMICOLON
               | condiciones SEMICOLON
               | asignacion SEMICOLON
-              | estructura
               | estrFor
               | estrWhile
               | input SEMICOLON'''
@@ -19,13 +19,13 @@ def p_expresionAritmetica(p):
 def p_operador(p): # - Mauricio Bravo
     '''operador : PLUS
                 | MINUS
-                | TIMES
+                | MULT
                 | DIVIDE
                 | MOD'''
     
 #IMPRESION CON CERO, UNO, O MAS ARGUMENTOS - Dereck Santander
 def p_valor(p):
-    '''valor : INT
+    '''valor : INTEGER
              | FLOAT
              | ID'''
 
@@ -47,9 +47,9 @@ def p_condicion(p):
     'condicion : valor operComp valor'
 
 def p_operComp(p): # - Mauricio Bravo
-    '''operComp : MORETHAN
+    '''operComp : GREATERTHAN
                 | LESSTHAN
-                | EQUITY
+                | EQUALITY
                 | DIFFERENTFROM
                 | GREATEREQUALSTHAN
                 | LESSEQUALSTHAN'''
@@ -68,13 +68,13 @@ def p_conector(p): # - Mauricio Bravo
 
 #definición de variables, todos los tipos, almacena resultados de expresiones/condicionales - Dereck Santander
 def p_asignacion(p):
-    '''asignacion : ID EQUALS valor
-                    | ID EQUALS condiciones
-                    | ID EQUALS expresionAritmetica'''
+    '''asignacion : ID ASSIGN valor
+                    | ID ASSIGN condiciones
+                    | ID ASSIGN expresionAritmetica'''
     
 #declarar estructuras de datos - Dereck Santander
 def p_asignacionEstructuras(p):
-    'asignacion : ID EQUALS estructuras'
+    'asignacion : ID ASSIGN estructuras'
 
 def p_estructuras(p):# - Mauricio Bravo
     '''estructuras : tupla
@@ -106,11 +106,25 @@ def p_error(p):
 # Build the parser
 parser = yacc.yacc()
 
-while True:
-   try:
-       s = input('lp > ')
-   except EOFError:
-       break
-   if not s: continue
-   result = parser.parse(s)
-   print(result) # type: ignore
+
+
+def crearLogParser(usuarioGit):
+    now = datetime.now()
+    archivo = open("logs/sintactico-"+usuarioGit+"-"+now.strftime("%d%m%Y-%Hh%M")+".txt","w")
+    s=""
+    while s!="SALIR":
+        try:
+            s = input('lp > ')
+            if s != "SALIR":
+                archivo.write("lp > "+s+"\n")
+        except EOFError:
+            archivo.write("Syntax error in input!")
+            break
+        if not s: continue
+        result = parser.parse(s)
+        print(result) # type: ignore
+        if s!="SALIR":
+            archivo.write(str(result)+"\n")
+    archivo.close()
+
+crearLogParser("mbravop")

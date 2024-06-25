@@ -5,6 +5,7 @@ reserved = {'as':'AS','break':'BREAK','const':'CONST','continue':'CONTINUE','cra
 
 #lista de los tokens - Dereck Santander
 tokens = (
+    'COMMA',
     'ID',
     'INTEGER',
     'FLOAT',
@@ -52,6 +53,7 @@ t_DOUBLEQUOTE = r'\"'
 t_DOUBLECOLON = r'::'
 t_DOT = r'\.'
 #Expresiones regulares para tokens simples - Mauricio
+t_COMMA = r','
 t_MULT = r'\*'
 t_LESSTHAN = r'<'
 t_GREATEREQUALSTHAN = r'>='
@@ -121,10 +123,9 @@ algoritmo2 = '''
         }
     }
 '''
-
+lexer = lex.lex()
 def ejecutarLexer(entradaLexer):
     salida = []
-    lexer = lex.lex()
     lexer.input(algoritmo)
     while True:
         tok = lexer.token()
@@ -141,5 +142,3 @@ def crearLog(usuarioGit, entradaLexer):
     archivo.write(ejecutarLexer(entradaLexer))
     archivo.close()
 
-crearLog("mbravop",algoritmo)
-crearLog("DereckSantander",algoritmo2)

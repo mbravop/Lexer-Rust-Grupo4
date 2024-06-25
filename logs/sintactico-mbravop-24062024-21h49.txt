@@ -1,0 +1,6 @@
+lp > a = 1 + 2 + 3;
+None
+lp > b = var1 && var2 || var3;
+None
+lp > b = true;
+None
