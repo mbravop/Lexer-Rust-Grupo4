@@ -2,14 +2,14 @@ import ply.yacc as yacc
 from lexer import tokens
 
 def p_codigo(p):
-    '''codigo : expresionAritmetica
-              | impresion  
-              | condiciones
-              | asignacion
-              | tupla
-              | array
+    '''codigo : expresionAritmetica SEMICOLON
+              | impresion SEMICOLON
+              | condiciones SEMICOLON
+              | asignacion SEMICOLON
+              | estructura
               | estrFor
-              | estrWhile'''
+              | estrWhile
+              | input SEMICOLON'''
 
 #expresiones aritméticas con uno o más operadores - Mauricio Bravo
 def p_expresionAritmetica(p):
@@ -90,7 +90,7 @@ def p_array(p): # - Dereck Santander
     'array : LBRACKET valores RBRACKET'
 
 def p_arrayVacio(p): # - Dereck Santander
-    'array: LBRACKET RBRACKET'
+    'array : LBRACKET RBRACKET'
 
 #declarar estructuras de control
 def p_estrWhile(p): # - Mauricio Bravo
