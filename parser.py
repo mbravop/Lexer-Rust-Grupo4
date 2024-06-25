@@ -8,10 +8,10 @@ def p_funcion(p):
 
 
 def p_codigo(p):
-    '''codigo : expresionAritmetica 
+    '''codigo : expresionAritmetica SEMICOLON
               | impresion SEMICOLON
               | condiciones 
-              | asignacion
+              | asignacion SEMICOLON
               | estrFor
               | estrWhile
               | input SEMICOLON
