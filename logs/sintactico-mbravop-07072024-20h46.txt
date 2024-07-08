@@ -1,0 +1,4 @@
+lp > fn main(){let a = 10; fn f1(){let b=5;} fn f2(){let c=10;}}
+None
+lp > fn main(){let a = 10; fn f1(){let b=5;} fn f3(){let c=10;}}
+None

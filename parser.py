@@ -2,13 +2,37 @@ import ply.yacc as yacc
 from lexer import tokens
 from datetime import datetime
 
-#Agregar variables declaradas 
+def crearLogSemantico(usuarioGit):
+    now = datetime.now()
+    archivoSemantico = open("logs/semantico-" + usuarioGit + "-" + now.strftime("%d%m%Y-%Hh%M") + ".txt", "w")
+    return archivoSemantico
+
+
+def cerrarLogSemantico(archivo):
+    archivo.close()
+
+archivoSemantico = crearLogSemantico("mbravop")
+
+#Agregar variables declaradas - Dereck Santander
 variables = {}
+
+#Agregar funciones declaradas - Mauricio Bravo
+listaFunciones = set([])
+
+#Error semántico para log - Mauricio Bravo
+errorSemanticoDefault = "No hay errores semánticos."
+errorSemantico = errorSemanticoDefault
 
 #Funcion general - Dereck Santander
 def p_funcion(p):
     '''funcion : FN ID LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKET'''
-
+    if p[2] in listaFunciones:
+        errorSemantico = f"Error semantico. La función {p[2]} ya existe"
+        print(errorSemantico)
+        archivoSemantico.write(errorSemantico + "\n")
+        errorSemantico = errorSemanticoDefault
+    else:
+        listaFunciones.add(p[2])
     #New
     p[0] = p[6]
 
@@ -19,11 +43,15 @@ def p_codigo(p):
               | asignacion masCodigo
               | estrFor
               | estrWhile
-              | input masCodigo'''
+              | input masCodigo
+              | funciones'''
 
     #New
     p[0] = p[1]
 
+def p_funciones(p):
+    '''funciones : funcion
+                 | funcion funciones'''
 def p_masCodigo(p):
     '''masCodigo : SEMICOLON
                 | SEMICOLON codigo'''
@@ -36,16 +64,38 @@ def p_expresionAritmetica(p):
     #New
     if len(p) == 4:
         if not isinstance(p[1],str) or p[1] in variables:
-            pass
+            if not isinstance(p[1],int):
+                errorSemantico = "Error semantico. No se pueden operar valores de tipo no numérico"
+                print(errorSemantico)
+                archivoSemantico.write(errorSemantico + "\n")
+                errorSemantico = errorSemanticoDefault
+                return
+            else:
+                pass
         else:
-            print(f"Error semantico. La variable {p[1]} no ha sido inicializada")
+            errorSemantico = f"Error semantico. La variable {p[1]} no ha sido inicializada"
+            print(errorSemantico)
+            archivoSemantico.write(errorSemantico + "\n")
+            errorSemantico = errorSemanticoDefault
+            return
 
         if not isinstance(p[3],str) or p[3] in variables:
-            pass
+            if not isinstance(p[3],int):
+                errorSemantico = "Error semantico. No se pueden operar valores de tipo no numérico"
+                print(errorSemantico)
+                archivoSemantico.write(errorSemantico + "\n")
+                errorSemantico = errorSemanticoDefault
+                return
+            else:
+                pass
         else:
-            print(f"Error semantico. La variable {p[3]} no ha sido inicializada")
+            errorSemantico = f"Error semantico. La variable {p[3]} no ha sido inicializada"
+            print(errorSemantico)
+            archivoSemantico.write(errorSemantico + "\n")
+            errorSemantico = errorSemanticoDefault
+            return
     else:
-        p[0] = [p[1]] + p[3]
+        p[0] = p[1] + p[3]
 
 def p_operador(p): # - Mauricio Bravo
     '''operador : PLUS
@@ -62,6 +112,10 @@ def p_valor(p):
     #New
     if isinstance(p[1], str) and p[1] in variables:
         p[0] = variables[p[1]]
+    elif isinstance(p[1],int):
+        p[0]= int(p[1])
+    elif isinstance(p[1],float):
+        p[0] = float(p[1])
     else:
         p[0] = p[1]
 
@@ -89,7 +143,10 @@ def p_input(p):
     if not isinstance(p[15],str) or p[15] in variables:
         pass
     else:
-        print(f"Error semantico. La variable {p[15]} no ha sido inicializada")
+        errorSemantico = f"Error semantico. La variable {p[15]} no ha sido inicializada"
+        print(errorSemantico)
+        archivoSemantico.write(errorSemantico + "\n")
+        errorSemantico = errorSemanticoDefault
 
 #condiciones con uno o más conectores - Mauricio Bravo
 def p_condicion(p):
@@ -99,12 +156,18 @@ def p_condicion(p):
     if not isinstance(p[1],str) or p[1] in variables:
         pass
     else:
-        print(f"Error semantico. La variable {p[1]} no ha sido inicializada")
+        errorSemantico = f"Error semantico. La variable {p[1]} no ha sido inicializada"
+        print(errorSemantico)
+        archivoSemantico.write(errorSemantico + "\n")
+        errorSemantico = errorSemanticoDefault
 
     if not isinstance(p[3],str) or p[3] in variables:
         pass
     else:
-        print(f"Error semantico. La variable {p[3]} no ha sido inicializada")
+        errorSemantico = f"Error semantico. La variable {p[3]} no ha sido inicializada"
+        print(errorSemantico)
+        archivoSemantico.write(errorSemantico + "\n")
+        errorSemantico = errorSemanticoDefault
 
 def p_operComp(p): # - Mauricio Bravo
     '''operComp : GREATERTHAN
@@ -189,24 +252,29 @@ parser = yacc.yacc()
 
 
 
-def crearLogParser(usuarioGit):
+def crearLogParser(usuarioGit, archivoSem):
     now = datetime.now()
-    archivo = open("logs/sintactico-"+usuarioGit+"-"+now.strftime("%d%m%Y-%Hh%M")+".txt","w")
+    archivoSintactico = open("logs/sintactico-"+usuarioGit+"-"+now.strftime("%d%m%Y-%Hh%M")+".txt","w")
     s=""
     while s!="SALIR":
         try:
             s = input('lp > ')
             if s != "SALIR":
-                archivo.write("lp > "+s+"\n")
+                archivoSintactico.write("lp > "+s+"\n")
+                archivoSem.write("lp > "+s+"\n")
         except EOFError:
-            archivo.write("Syntax error in input!")
+            archivoSintactico.write("Syntax error in input!")
             break
         if not s: continue
         result = parser.parse(s)
         print(result) # type: ignore
         if s!="SALIR":
-            archivo.write(str(result)+"\n")
-    archivo.close()
+            archivoSintactico.write(str(result)+"\n")
+    archivoSintactico.close()
 
-crearLogParser("mbravop")
+
+
+
+crearLogParser("mbravop", archivoSemantico)
 #crearLogParser("DereckSantander")
+cerrarLogSemantico(archivoSemantico)

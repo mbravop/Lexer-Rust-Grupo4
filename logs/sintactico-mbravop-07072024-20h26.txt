@@ -1,0 +1,3 @@
+lp > fn main(){let res = a + b;}
+None
+No hay errores semánticos.

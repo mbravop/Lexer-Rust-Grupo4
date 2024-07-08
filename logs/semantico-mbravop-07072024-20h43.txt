@@ -1,0 +1,5 @@
+lp > fn main(){let a = 10; fn f1(){let b=5;} fn f2(){let c=10;}}
+lp > fn main(){let a = 10; fn f1(){let b=5;} fn f1(){let c=10;}}
+Error semantico. La función f1 ya existe
+Error semantico. La función f1 ya existe
+Error semantico. La función main ya existe

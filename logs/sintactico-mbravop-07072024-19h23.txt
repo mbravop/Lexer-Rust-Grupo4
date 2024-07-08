@@ -1,0 +1,4 @@
+lp > fn main(){let a = b;}
+None
+lp > fn main(){let a = b;fn xd(){let b=5;}}
+None

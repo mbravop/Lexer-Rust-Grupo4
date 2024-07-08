@@ -1,0 +1,4 @@
+lp > fn main(let a = 5; ;let res = a + 10;)
+None
+lp > fn main(){let a = 5; ;let res = a + 10;}
+None

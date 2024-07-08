@@ -1,0 +1,4 @@
+lp > fn main () {let suma = 5 + 6; while true {std::io::stdin().readline(ref mut resta);} for n in numeros {println!(12);}  }'
+None
+lp > std::io::stdin().readline(ref mut resta);
+None

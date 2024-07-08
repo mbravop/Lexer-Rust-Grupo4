@@ -1,0 +1,8 @@
+lp > fn main(){let a = 10; let b = 5; let res = a + b;}
+None
+lp > fn main(){let a = 10; let b = 5; let res = a + c;}
+None
+lp > fn main(){let a = 10; let b = 5; let res = a > b;}
+None
+lp > fn main(){let a = 10; let b = 5; let res = a < c;}
+None
