@@ -11,7 +11,7 @@ def crearLogSemantico(usuarioGit):
 def cerrarLogSemantico(archivo):
     archivo.close()
 
-archivoSemantico = crearLogSemantico("mbravop")
+archivoSemantico = crearLogSemantico("DereckSantander")
 
 #Agregar variables declaradas - Dereck Santander
 variables = {}
@@ -52,6 +52,10 @@ def p_codigo(p):
 def p_funciones(p):
     '''funciones : funcion
                  | funcion funciones'''
+    
+    #New
+    p[0] = p[1]
+
 def p_masCodigo(p):
     '''masCodigo : SEMICOLON
                 | SEMICOLON codigo'''
@@ -95,7 +99,7 @@ def p_expresionAritmetica(p):
             errorSemantico = errorSemanticoDefault
             return
     else:
-        p[0] = p[1] + p[3]
+        p[0] = [p[1]] + p[3]
 
 def p_operador(p): # - Mauricio Bravo
     '''operador : PLUS
@@ -169,6 +173,7 @@ def p_condicion(p):
         archivoSemantico.write(errorSemantico + "\n")
         errorSemantico = errorSemanticoDefault
 
+
 def p_operComp(p): # - Mauricio Bravo
     '''operComp : GREATERTHAN
                 | LESSTHAN
@@ -183,7 +188,7 @@ def p_condiciones(p): # - Mauricio Bravo
     
     #New
     if len(p) == 2:
-        p[0] = [p[1]]
+            p[0] = [p[1]]
     else:
         p[0] = [p[1]] + p[3]
 
@@ -238,10 +243,17 @@ def p_arrayVacio(p): # - Dereck Santander
 def p_estrWhile(p): # - Mauricio Bravo
     '''estrWhile : WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET
                  | WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET codigo '''
+    
+    #New
+    p[0] = p[4]
 
 def p_estrFor(p): # - Dereck Santander
     '''estrFor : FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET
                 | FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET codigo'''
+    
+    #New
+    p[0] = p[4]
+    
 
 # Error rule for syntax errors
 def p_error(p):
@@ -275,6 +287,6 @@ def crearLogParser(usuarioGit, archivoSem):
 
 
 
-crearLogParser("mbravop", archivoSemantico)
+crearLogParser("DereckSantander", archivoSemantico)
 #crearLogParser("DereckSantander")
 cerrarLogSemantico(archivoSemantico)

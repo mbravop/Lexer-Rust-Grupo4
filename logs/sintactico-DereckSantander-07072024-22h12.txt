@@ -1,0 +1,14 @@
+lp > fn main() {1<2;}
+None
+lp > fn main() {true and false;}
+None
+lp > fn main() {true NAD false;}
+None
+lp > fn main() {true AND false;}
+None
+lp > fn main() {true AND FALSE;}
+None
+lp > fn main() {MAIN AND FALSE;}
+None
+lp > fn main() {TRUE AND FALSE;}
+None

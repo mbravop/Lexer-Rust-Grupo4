@@ -1,0 +1,9 @@
+lp > fn main() {1<2;}
+lp > fn main() {1==2 and 2!=3;}
+lp > fn main() {1==2; and 2!=3;}
+lp > fn main() {1==2 && 2!=3;}
+Error semantico. La función main ya existe
+lp > fn main() {1==2 || 2!=3;}
+Error semantico. La función main ya existe
+lp > fn main() {1==2;}
+Error semantico. La función main ya existe

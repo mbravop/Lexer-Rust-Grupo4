@@ -1,0 +1,12 @@
+lp > fn main() {1<2;}
+[None]
+lp > fn main() {1==2 and 2!=3;}
+None
+lp > fn main() {1==2; and 2!=3;}
+None
+lp > fn main() {1==2 && 2!=3;}
+[None, None]
+lp > fn main() {1==2 || 2!=3;}
+[None, None]
+lp > fn main() {1==2;}
+[None]
