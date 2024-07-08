@@ -1,0 +1,6 @@
+lp > fn main(){print(}
+None
+lp > fn main(){print();}
+None
+lp > fn main(){print()}
+None

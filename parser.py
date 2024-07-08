@@ -259,6 +259,31 @@ def p_estrFor(p): # - Dereck Santander
 def p_error(p):
     print("Syntax error in input!")
 
+
+def p_impresion_error(p):
+    'impresion : PRINT error'
+    print("Syntax error in print statement. Bad expression")
+
+
+def p_funcion_error(p):
+    'funcion : FN error'
+    print("Syntax error in funcion statement. Bad expression")
+
+
+def p_expresionAritmetica_error(p):
+    'expresionAritmetica : valor error'
+    print("Syntax error in expresionAritmetica statement. Bad expression")
+
+
+def p_input_error(p):
+    'input: STD error'
+    print("Syntax error in input statement. Bad expression")
+
+
+def p_asignacion_error(p):
+    'asignacion: LET error'
+    print("Syntax error in asignacion statement. Bad expression")
+
 # Build the parser
 parser = yacc.yacc()
 
