@@ -20,7 +20,6 @@ Unused terminals:
     MATCH
     MODULE
     MOVE
-    PRINT
     PUB
     RETURN
     SINGLEQUOTE
@@ -92,6 +91,11 @@ Rule 51    estrWhile -> WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET
 Rule 52    estrWhile -> WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET codigo
 Rule 53    estrFor -> FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET
 Rule 54    estrFor -> FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET codigo
+Rule 55    impresion -> PRINT error
+Rule 56    funcion -> FN error
+Rule 57    expresionAritmetica -> valor error
+Rule 58    input -> STD error
+Rule 59    asignacion -> LET error
 
 Terminals, with rules where they appear
 
@@ -117,7 +121,7 @@ EQUALITY             : 31
 EXTERN               : 
 FALSE                : 38
 FLOAT                : 22
-FN                   : 1
+FN                   : 1 56
 FOR                  : 53 54
 GREATEREQUALSTHAN    : 33
 GREATERTHAN          : 29
@@ -131,7 +135,7 @@ LBRACKET             : 49 50
 LCURLYBRACKET        : 1 51 52 53 54
 LESSEQUALSTHAN       : 34
 LESSTHAN             : 30
-LET                  : 41 42 43 44
+LET                  : 41 42 43 44 59
 LOOP                 : 
 LPAREN               : 1 26 27 27 47 48
 MATCH                : 
@@ -144,7 +148,7 @@ MUT                  : 27
 NOT                  : 26
 OR                   : 40
 PLUS                 : 16
-PRINT                : 
+PRINT                : 55
 PRINTLN              : 26
 PUB                  : 
 RBRACKET             : 49 50
@@ -156,7 +160,7 @@ RPAREN               : 1 26 27 27 47 48
 SEMICOLON            : 12 13
 SINGLEQUOTE          : 
 STATIC               : 
-STD                  : 27
+STD                  : 27 58
 STDIN                : 27
 STRUCT               : 
 SUPER                : 
@@ -168,7 +172,7 @@ UNSAFE               :
 USE                  : 
 WHERE                : 
 WHILE                : 51 52
-error                : 
+error                : 55 56 57 58 59
 self                 : 
 
 Nonterminals, with rules where they appear
@@ -191,7 +195,7 @@ masCodigo            : 2 3 4 5 8
 operComp             : 28
 operador             : 14 15
 tupla                : 45
-valor                : 14 14 15 24 25 28 28 41
+valor                : 14 14 15 24 25 28 28 41 57
 valores              : 25 26 47 49
 
 Parsing method: LALR
@@ -200,6 +204,7 @@ state 0
 
     (0) S' -> . funcion
     (1) funcion -> . FN ID LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKET
+    (56) funcion -> . FN error
 
     FN              shift and go to state 2
 
@@ -214,32 +219,43 @@ state 1
 state 2
 
     (1) funcion -> FN . ID LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKET
+    (56) funcion -> FN . error
 
     ID              shift and go to state 3
+    error           shift and go to state 4
 
 
 state 3
 
     (1) funcion -> FN ID . LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKET
 
-    LPAREN          shift and go to state 4
+    LPAREN          shift and go to state 5
 
 
 state 4
 
-    (1) funcion -> FN ID LPAREN . RPAREN LCURLYBRACKET codigo RCURLYBRACKET
+    (56) funcion -> FN error .
 
-    RPAREN          shift and go to state 5
+    $end            reduce using rule 56 (funcion -> FN error .)
+    FN              reduce using rule 56 (funcion -> FN error .)
+    RCURLYBRACKET   reduce using rule 56 (funcion -> FN error .)
 
 
 state 5
 
-    (1) funcion -> FN ID LPAREN RPAREN . LCURLYBRACKET codigo RCURLYBRACKET
+    (1) funcion -> FN ID LPAREN . RPAREN LCURLYBRACKET codigo RCURLYBRACKET
 
-    LCURLYBRACKET   shift and go to state 6
+    RPAREN          shift and go to state 6
 
 
 state 6
+
+    (1) funcion -> FN ID LPAREN RPAREN . LCURLYBRACKET codigo RCURLYBRACKET
+
+    LCURLYBRACKET   shift and go to state 7
+
+
+state 7
 
     (1) funcion -> FN ID LPAREN RPAREN LCURLYBRACKET . codigo RCURLYBRACKET
     (2) codigo -> . expresionAritmetica masCodigo
@@ -252,18 +268,22 @@ state 6
     (9) codigo -> . funciones
     (14) expresionAritmetica -> . valor operador valor
     (15) expresionAritmetica -> . valor operador expresionAritmetica
+    (57) expresionAritmetica -> . valor error
     (26) impresion -> . PRINTLN NOT LPAREN valores RPAREN
+    (55) impresion -> . PRINT error
     (35) condiciones -> . condicion
     (36) condiciones -> . condicion conector condiciones
     (41) asignacion -> . LET ID ASSIGN valor
     (42) asignacion -> . LET ID ASSIGN condiciones
     (43) asignacion -> . LET ID ASSIGN expresionAritmetica
     (44) asignacion -> . LET ID ASSIGN estructuras
+    (59) asignacion -> . LET error
     (53) estrFor -> . FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET
     (54) estrFor -> . FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET codigo
     (51) estrWhile -> . WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET
     (52) estrWhile -> . WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET codigo
     (27) input -> . STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN
+    (58) input -> . STD error
     (10) funciones -> . funcion
     (11) funciones -> . funcion funciones
     (21) valor -> . INTEGER
@@ -273,36 +293,39 @@ state 6
     (37) condicion -> . TRUE
     (38) condicion -> . FALSE
     (1) funcion -> . FN ID LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKET
+    (56) funcion -> . FN error
 
-    PRINTLN         shift and go to state 18
-    LET             shift and go to state 20
-    FOR             shift and go to state 21
-    WHILE           shift and go to state 22
-    STD             shift and go to state 23
-    INTEGER         shift and go to state 25
-    FLOAT           shift and go to state 26
-    ID              shift and go to state 7
-    TRUE            shift and go to state 27
-    FALSE           shift and go to state 28
+    PRINTLN         shift and go to state 19
+    PRINT           shift and go to state 20
+    LET             shift and go to state 22
+    FOR             shift and go to state 23
+    WHILE           shift and go to state 24
+    STD             shift and go to state 25
+    INTEGER         shift and go to state 27
+    FLOAT           shift and go to state 28
+    ID              shift and go to state 8
+    TRUE            shift and go to state 29
+    FALSE           shift and go to state 30
     FN              shift and go to state 2
 
-    codigo                         shift and go to state 8
-    expresionAritmetica            shift and go to state 9
-    impresion                      shift and go to state 10
-    condiciones                    shift and go to state 11
-    asignacion                     shift and go to state 12
-    estrFor                        shift and go to state 13
-    estrWhile                      shift and go to state 14
-    input                          shift and go to state 15
-    funciones                      shift and go to state 16
-    valor                          shift and go to state 17
-    condicion                      shift and go to state 19
-    funcion                        shift and go to state 24
+    codigo                         shift and go to state 9
+    expresionAritmetica            shift and go to state 10
+    impresion                      shift and go to state 11
+    condiciones                    shift and go to state 12
+    asignacion                     shift and go to state 13
+    estrFor                        shift and go to state 14
+    estrWhile                      shift and go to state 15
+    input                          shift and go to state 16
+    funciones                      shift and go to state 17
+    valor                          shift and go to state 18
+    condicion                      shift and go to state 21
+    funcion                        shift and go to state 26
 
-state 7
+state 8
 
     (23) valor -> ID .
 
+    error           reduce using rule 23 (valor -> ID .)
     PLUS            reduce using rule 23 (valor -> ID .)
     MINUS           reduce using rule 23 (valor -> ID .)
     MULT            reduce using rule 23 (valor -> ID .)
@@ -323,88 +346,89 @@ state 7
     RBRACKET        reduce using rule 23 (valor -> ID .)
 
 
-state 8
+state 9
 
     (1) funcion -> FN ID LPAREN RPAREN LCURLYBRACKET codigo . RCURLYBRACKET
 
-    RCURLYBRACKET   shift and go to state 29
+    RCURLYBRACKET   shift and go to state 31
 
 
-state 9
+state 10
 
     (2) codigo -> expresionAritmetica . masCodigo
     (12) masCodigo -> . SEMICOLON
     (13) masCodigo -> . SEMICOLON codigo
 
-    SEMICOLON       shift and go to state 31
-
-    masCodigo                      shift and go to state 30
-
-state 10
-
-    (3) codigo -> impresion . masCodigo
-    (12) masCodigo -> . SEMICOLON
-    (13) masCodigo -> . SEMICOLON codigo
-
-    SEMICOLON       shift and go to state 31
+    SEMICOLON       shift and go to state 33
 
     masCodigo                      shift and go to state 32
 
 state 11
 
+    (3) codigo -> impresion . masCodigo
+    (12) masCodigo -> . SEMICOLON
+    (13) masCodigo -> . SEMICOLON codigo
+
+    SEMICOLON       shift and go to state 33
+
+    masCodigo                      shift and go to state 34
+
+state 12
+
     (4) codigo -> condiciones . masCodigo
     (12) masCodigo -> . SEMICOLON
     (13) masCodigo -> . SEMICOLON codigo
 
-    SEMICOLON       shift and go to state 31
+    SEMICOLON       shift and go to state 33
 
-    masCodigo                      shift and go to state 33
+    masCodigo                      shift and go to state 35
 
-state 12
+state 13
 
     (5) codigo -> asignacion . masCodigo
     (12) masCodigo -> . SEMICOLON
     (13) masCodigo -> . SEMICOLON codigo
 
-    SEMICOLON       shift and go to state 31
+    SEMICOLON       shift and go to state 33
 
-    masCodigo                      shift and go to state 34
+    masCodigo                      shift and go to state 36
 
-state 13
+state 14
 
     (6) codigo -> estrFor .
 
     RCURLYBRACKET   reduce using rule 6 (codigo -> estrFor .)
 
 
-state 14
+state 15
 
     (7) codigo -> estrWhile .
 
     RCURLYBRACKET   reduce using rule 7 (codigo -> estrWhile .)
 
 
-state 15
+state 16
 
     (8) codigo -> input . masCodigo
     (12) masCodigo -> . SEMICOLON
     (13) masCodigo -> . SEMICOLON codigo
 
-    SEMICOLON       shift and go to state 31
+    SEMICOLON       shift and go to state 33
 
-    masCodigo                      shift and go to state 35
+    masCodigo                      shift and go to state 37
 
-state 16
+state 17
 
     (9) codigo -> funciones .
 
     RCURLYBRACKET   reduce using rule 9 (codigo -> funciones .)
 
 
-state 17
+state 18
 
     (14) expresionAritmetica -> valor . operador valor
     (15) expresionAritmetica -> valor . operador expresionAritmetica
+    (57) expresionAritmetica -> valor . error
     (28) condicion -> valor . operComp valor
     (16) operador -> . PLUS
     (17) operador -> . MINUS
@@ -418,29 +442,37 @@ state 17
     (33) operComp -> . GREATEREQUALSTHAN
     (34) operComp -> . LESSEQUALSTHAN
 
-    PLUS            shift and go to state 38
-    MINUS           shift and go to state 39
-    MULT            shift and go to state 40
-    DIVIDE          shift and go to state 41
-    MOD             shift and go to state 42
-    GREATERTHAN     shift and go to state 43
-    LESSTHAN        shift and go to state 44
-    EQUALITY        shift and go to state 45
-    DIFFERENTFROM   shift and go to state 46
-    GREATEREQUALSTHAN shift and go to state 47
-    LESSEQUALSTHAN  shift and go to state 48
+    error           shift and go to state 39
+    PLUS            shift and go to state 41
+    MINUS           shift and go to state 42
+    MULT            shift and go to state 43
+    DIVIDE          shift and go to state 44
+    MOD             shift and go to state 45
+    GREATERTHAN     shift and go to state 46
+    LESSTHAN        shift and go to state 47
+    EQUALITY        shift and go to state 48
+    DIFFERENTFROM   shift and go to state 49
+    GREATEREQUALSTHAN shift and go to state 50
+    LESSEQUALSTHAN  shift and go to state 51
 
-    operador                       shift and go to state 36
-    operComp                       shift and go to state 37
+    operador                       shift and go to state 38
+    operComp                       shift and go to state 40
 
-state 18
+state 19
 
     (26) impresion -> PRINTLN . NOT LPAREN valores RPAREN
 
-    NOT             shift and go to state 49
+    NOT             shift and go to state 52
 
 
-state 19
+state 20
+
+    (55) impresion -> PRINT . error
+
+    error           shift and go to state 53
+
+
+state 21
 
     (35) condiciones -> condicion .
     (36) condiciones -> condicion . conector condiciones
@@ -449,30 +481,32 @@ state 19
 
     SEMICOLON       reduce using rule 35 (condiciones -> condicion .)
     LCURLYBRACKET   reduce using rule 35 (condiciones -> condicion .)
-    AND             shift and go to state 51
-    OR              shift and go to state 52
+    AND             shift and go to state 55
+    OR              shift and go to state 56
 
-    conector                       shift and go to state 50
+    conector                       shift and go to state 54
 
-state 20
+state 22
 
     (41) asignacion -> LET . ID ASSIGN valor
     (42) asignacion -> LET . ID ASSIGN condiciones
     (43) asignacion -> LET . ID ASSIGN expresionAritmetica
     (44) asignacion -> LET . ID ASSIGN estructuras
+    (59) asignacion -> LET . error
 
-    ID              shift and go to state 53
+    ID              shift and go to state 57
+    error           shift and go to state 58
 
 
-state 21
+state 23
 
     (53) estrFor -> FOR . ID IN ID LCURLYBRACKET codigo RCURLYBRACKET
     (54) estrFor -> FOR . ID IN ID LCURLYBRACKET codigo RCURLYBRACKET codigo
 
-    ID              shift and go to state 54
+    ID              shift and go to state 59
 
 
-state 22
+state 24
 
     (51) estrWhile -> WHILE . condiciones LCURLYBRACKET codigo RCURLYBRACKET
     (52) estrWhile -> WHILE . condiciones LCURLYBRACKET codigo RCURLYBRACKET codigo
@@ -485,41 +519,45 @@ state 22
     (22) valor -> . FLOAT
     (23) valor -> . ID
 
-    TRUE            shift and go to state 27
-    FALSE           shift and go to state 28
-    INTEGER         shift and go to state 25
-    FLOAT           shift and go to state 26
-    ID              shift and go to state 7
+    TRUE            shift and go to state 29
+    FALSE           shift and go to state 30
+    INTEGER         shift and go to state 27
+    FLOAT           shift and go to state 28
+    ID              shift and go to state 8
 
-    condiciones                    shift and go to state 55
-    condicion                      shift and go to state 19
-    valor                          shift and go to state 56
+    condiciones                    shift and go to state 60
+    condicion                      shift and go to state 21
+    valor                          shift and go to state 61
 
-state 23
+state 25
 
     (27) input -> STD . COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN
+    (58) input -> STD . error
 
-    COLON           shift and go to state 57
+    COLON           shift and go to state 62
+    error           shift and go to state 63
 
 
-state 24
+state 26
 
     (10) funciones -> funcion .
     (11) funciones -> funcion . funciones
     (10) funciones -> . funcion
     (11) funciones -> . funcion funciones
     (1) funcion -> . FN ID LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKET
+    (56) funcion -> . FN error
 
     RCURLYBRACKET   reduce using rule 10 (funciones -> funcion .)
     FN              shift and go to state 2
 
-    funcion                        shift and go to state 24
-    funciones                      shift and go to state 58
+    funcion                        shift and go to state 26
+    funciones                      shift and go to state 64
 
-state 25
+state 27
 
     (21) valor -> INTEGER .
 
+    error           reduce using rule 21 (valor -> INTEGER .)
     PLUS            reduce using rule 21 (valor -> INTEGER .)
     MINUS           reduce using rule 21 (valor -> INTEGER .)
     MULT            reduce using rule 21 (valor -> INTEGER .)
@@ -540,10 +578,11 @@ state 25
     RBRACKET        reduce using rule 21 (valor -> INTEGER .)
 
 
-state 26
+state 28
 
     (22) valor -> FLOAT .
 
+    error           reduce using rule 22 (valor -> FLOAT .)
     PLUS            reduce using rule 22 (valor -> FLOAT .)
     MINUS           reduce using rule 22 (valor -> FLOAT .)
     MULT            reduce using rule 22 (valor -> FLOAT .)
@@ -564,7 +603,7 @@ state 26
     RBRACKET        reduce using rule 22 (valor -> FLOAT .)
 
 
-state 27
+state 29
 
     (37) condicion -> TRUE .
 
@@ -574,7 +613,7 @@ state 27
     LCURLYBRACKET   reduce using rule 37 (condicion -> TRUE .)
 
 
-state 28
+state 30
 
     (38) condicion -> FALSE .
 
@@ -584,7 +623,7 @@ state 28
     LCURLYBRACKET   reduce using rule 38 (condicion -> FALSE .)
 
 
-state 29
+state 31
 
     (1) funcion -> FN ID LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKET .
 
@@ -593,14 +632,14 @@ state 29
     RCURLYBRACKET   reduce using rule 1 (funcion -> FN ID LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKET .)
 
 
-state 30
+state 32
 
     (2) codigo -> expresionAritmetica masCodigo .
 
     RCURLYBRACKET   reduce using rule 2 (codigo -> expresionAritmetica masCodigo .)
 
 
-state 31
+state 33
 
     (12) masCodigo -> SEMICOLON .
     (13) masCodigo -> SEMICOLON . codigo
@@ -614,18 +653,22 @@ state 31
     (9) codigo -> . funciones
     (14) expresionAritmetica -> . valor operador valor
     (15) expresionAritmetica -> . valor operador expresionAritmetica
+    (57) expresionAritmetica -> . valor error
     (26) impresion -> . PRINTLN NOT LPAREN valores RPAREN
+    (55) impresion -> . PRINT error
     (35) condiciones -> . condicion
     (36) condiciones -> . condicion conector condiciones
     (41) asignacion -> . LET ID ASSIGN valor
     (42) asignacion -> . LET ID ASSIGN condiciones
     (43) asignacion -> . LET ID ASSIGN expresionAritmetica
     (44) asignacion -> . LET ID ASSIGN estructuras
+    (59) asignacion -> . LET error
     (53) estrFor -> . FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET
     (54) estrFor -> . FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET codigo
     (51) estrWhile -> . WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET
     (52) estrWhile -> . WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET codigo
     (27) input -> . STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN
+    (58) input -> . STD error
     (10) funciones -> . funcion
     (11) funciones -> . funcion funciones
     (21) valor -> . INTEGER
@@ -635,62 +678,64 @@ state 31
     (37) condicion -> . TRUE
     (38) condicion -> . FALSE
     (1) funcion -> . FN ID LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKET
+    (56) funcion -> . FN error
 
     RCURLYBRACKET   reduce using rule 12 (masCodigo -> SEMICOLON .)
-    PRINTLN         shift and go to state 18
-    LET             shift and go to state 20
-    FOR             shift and go to state 21
-    WHILE           shift and go to state 22
-    STD             shift and go to state 23
-    INTEGER         shift and go to state 25
-    FLOAT           shift and go to state 26
-    ID              shift and go to state 7
-    TRUE            shift and go to state 27
-    FALSE           shift and go to state 28
+    PRINTLN         shift and go to state 19
+    PRINT           shift and go to state 20
+    LET             shift and go to state 22
+    FOR             shift and go to state 23
+    WHILE           shift and go to state 24
+    STD             shift and go to state 25
+    INTEGER         shift and go to state 27
+    FLOAT           shift and go to state 28
+    ID              shift and go to state 8
+    TRUE            shift and go to state 29
+    FALSE           shift and go to state 30
     FN              shift and go to state 2
 
-    codigo                         shift and go to state 59
-    expresionAritmetica            shift and go to state 9
-    impresion                      shift and go to state 10
-    condiciones                    shift and go to state 11
-    asignacion                     shift and go to state 12
-    estrFor                        shift and go to state 13
-    estrWhile                      shift and go to state 14
-    input                          shift and go to state 15
-    funciones                      shift and go to state 16
-    valor                          shift and go to state 17
-    condicion                      shift and go to state 19
-    funcion                        shift and go to state 24
+    codigo                         shift and go to state 65
+    expresionAritmetica            shift and go to state 10
+    impresion                      shift and go to state 11
+    condiciones                    shift and go to state 12
+    asignacion                     shift and go to state 13
+    estrFor                        shift and go to state 14
+    estrWhile                      shift and go to state 15
+    input                          shift and go to state 16
+    funciones                      shift and go to state 17
+    valor                          shift and go to state 18
+    condicion                      shift and go to state 21
+    funcion                        shift and go to state 26
 
-state 32
+state 34
 
     (3) codigo -> impresion masCodigo .
 
     RCURLYBRACKET   reduce using rule 3 (codigo -> impresion masCodigo .)
 
 
-state 33
+state 35
 
     (4) codigo -> condiciones masCodigo .
 
     RCURLYBRACKET   reduce using rule 4 (codigo -> condiciones masCodigo .)
 
 
-state 34
+state 36
 
     (5) codigo -> asignacion masCodigo .
 
     RCURLYBRACKET   reduce using rule 5 (codigo -> asignacion masCodigo .)
 
 
-state 35
+state 37
 
     (8) codigo -> input masCodigo .
 
     RCURLYBRACKET   reduce using rule 8 (codigo -> input masCodigo .)
 
 
-state 36
+state 38
 
     (14) expresionAritmetica -> valor operador . valor
     (15) expresionAritmetica -> valor operador . expresionAritmetica
@@ -699,28 +744,36 @@ state 36
     (23) valor -> . ID
     (14) expresionAritmetica -> . valor operador valor
     (15) expresionAritmetica -> . valor operador expresionAritmetica
+    (57) expresionAritmetica -> . valor error
 
-    INTEGER         shift and go to state 25
-    FLOAT           shift and go to state 26
-    ID              shift and go to state 7
+    INTEGER         shift and go to state 27
+    FLOAT           shift and go to state 28
+    ID              shift and go to state 8
 
-    valor                          shift and go to state 60
-    expresionAritmetica            shift and go to state 61
+    valor                          shift and go to state 66
+    expresionAritmetica            shift and go to state 67
 
-state 37
+state 39
+
+    (57) expresionAritmetica -> valor error .
+
+    SEMICOLON       reduce using rule 57 (expresionAritmetica -> valor error .)
+
+
+state 40
 
     (28) condicion -> valor operComp . valor
     (21) valor -> . INTEGER
     (22) valor -> . FLOAT
     (23) valor -> . ID
 
-    INTEGER         shift and go to state 25
-    FLOAT           shift and go to state 26
-    ID              shift and go to state 7
+    INTEGER         shift and go to state 27
+    FLOAT           shift and go to state 28
+    ID              shift and go to state 8
 
-    valor                          shift and go to state 62
+    valor                          shift and go to state 68
 
-state 38
+state 41
 
     (16) operador -> PLUS .
 
@@ -729,7 +782,7 @@ state 38
     ID              reduce using rule 16 (operador -> PLUS .)
 
 
-state 39
+state 42
 
     (17) operador -> MINUS .
 
@@ -738,7 +791,7 @@ state 39
     ID              reduce using rule 17 (operador -> MINUS .)
 
 
-state 40
+state 43
 
     (18) operador -> MULT .
 
@@ -747,7 +800,7 @@ state 40
     ID              reduce using rule 18 (operador -> MULT .)
 
 
-state 41
+state 44
 
     (19) operador -> DIVIDE .
 
@@ -756,7 +809,7 @@ state 41
     ID              reduce using rule 19 (operador -> DIVIDE .)
 
 
-state 42
+state 45
 
     (20) operador -> MOD .
 
@@ -765,7 +818,7 @@ state 42
     ID              reduce using rule 20 (operador -> MOD .)
 
 
-state 43
+state 46
 
     (29) operComp -> GREATERTHAN .
 
@@ -774,7 +827,7 @@ state 43
     ID              reduce using rule 29 (operComp -> GREATERTHAN .)
 
 
-state 44
+state 47
 
     (30) operComp -> LESSTHAN .
 
@@ -783,7 +836,7 @@ state 44
     ID              reduce using rule 30 (operComp -> LESSTHAN .)
 
 
-state 45
+state 48
 
     (31) operComp -> EQUALITY .
 
@@ -792,7 +845,7 @@ state 45
     ID              reduce using rule 31 (operComp -> EQUALITY .)
 
 
-state 46
+state 49
 
     (32) operComp -> DIFFERENTFROM .
 
@@ -801,7 +854,7 @@ state 46
     ID              reduce using rule 32 (operComp -> DIFFERENTFROM .)
 
 
-state 47
+state 50
 
     (33) operComp -> GREATEREQUALSTHAN .
 
@@ -810,7 +863,7 @@ state 47
     ID              reduce using rule 33 (operComp -> GREATEREQUALSTHAN .)
 
 
-state 48
+state 51
 
     (34) operComp -> LESSEQUALSTHAN .
 
@@ -819,14 +872,21 @@ state 48
     ID              reduce using rule 34 (operComp -> LESSEQUALSTHAN .)
 
 
-state 49
+state 52
 
     (26) impresion -> PRINTLN NOT . LPAREN valores RPAREN
 
-    LPAREN          shift and go to state 63
+    LPAREN          shift and go to state 69
 
 
-state 50
+state 53
+
+    (55) impresion -> PRINT error .
+
+    SEMICOLON       reduce using rule 55 (impresion -> PRINT error .)
+
+
+state 54
 
     (36) condiciones -> condicion conector . condiciones
     (35) condiciones -> . condicion
@@ -838,17 +898,17 @@ state 50
     (22) valor -> . FLOAT
     (23) valor -> . ID
 
-    TRUE            shift and go to state 27
-    FALSE           shift and go to state 28
-    INTEGER         shift and go to state 25
-    FLOAT           shift and go to state 26
-    ID              shift and go to state 7
+    TRUE            shift and go to state 29
+    FALSE           shift and go to state 30
+    INTEGER         shift and go to state 27
+    FLOAT           shift and go to state 28
+    ID              shift and go to state 8
 
-    condicion                      shift and go to state 19
-    condiciones                    shift and go to state 64
-    valor                          shift and go to state 56
+    condicion                      shift and go to state 21
+    condiciones                    shift and go to state 70
+    valor                          shift and go to state 61
 
-state 51
+state 55
 
     (39) conector -> AND .
 
@@ -859,7 +919,7 @@ state 51
     ID              reduce using rule 39 (conector -> AND .)
 
 
-state 52
+state 56
 
     (40) conector -> OR .
 
@@ -870,33 +930,40 @@ state 52
     ID              reduce using rule 40 (conector -> OR .)
 
 
-state 53
+state 57
 
     (41) asignacion -> LET ID . ASSIGN valor
     (42) asignacion -> LET ID . ASSIGN condiciones
     (43) asignacion -> LET ID . ASSIGN expresionAritmetica
     (44) asignacion -> LET ID . ASSIGN estructuras
 
-    ASSIGN          shift and go to state 65
+    ASSIGN          shift and go to state 71
 
 
-state 54
+state 58
+
+    (59) asignacion -> LET error .
+
+    SEMICOLON       reduce using rule 59 (asignacion -> LET error .)
+
+
+state 59
 
     (53) estrFor -> FOR ID . IN ID LCURLYBRACKET codigo RCURLYBRACKET
     (54) estrFor -> FOR ID . IN ID LCURLYBRACKET codigo RCURLYBRACKET codigo
 
-    IN              shift and go to state 66
+    IN              shift and go to state 72
 
 
-state 55
+state 60
 
     (51) estrWhile -> WHILE condiciones . LCURLYBRACKET codigo RCURLYBRACKET
     (52) estrWhile -> WHILE condiciones . LCURLYBRACKET codigo RCURLYBRACKET codigo
 
-    LCURLYBRACKET   shift and go to state 67
+    LCURLYBRACKET   shift and go to state 73
 
 
-state 56
+state 61
 
     (28) condicion -> valor . operComp valor
     (29) operComp -> . GREATERTHAN
@@ -906,41 +973,49 @@ state 56
     (33) operComp -> . GREATEREQUALSTHAN
     (34) operComp -> . LESSEQUALSTHAN
 
-    GREATERTHAN     shift and go to state 43
-    LESSTHAN        shift and go to state 44
-    EQUALITY        shift and go to state 45
-    DIFFERENTFROM   shift and go to state 46
-    GREATEREQUALSTHAN shift and go to state 47
-    LESSEQUALSTHAN  shift and go to state 48
+    GREATERTHAN     shift and go to state 46
+    LESSTHAN        shift and go to state 47
+    EQUALITY        shift and go to state 48
+    DIFFERENTFROM   shift and go to state 49
+    GREATEREQUALSTHAN shift and go to state 50
+    LESSEQUALSTHAN  shift and go to state 51
 
-    operComp                       shift and go to state 37
+    operComp                       shift and go to state 40
 
-state 57
+state 62
 
     (27) input -> STD COLON . COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN
 
-    COLON           shift and go to state 68
+    COLON           shift and go to state 74
 
 
-state 58
+state 63
+
+    (58) input -> STD error .
+
+    SEMICOLON       reduce using rule 58 (input -> STD error .)
+
+
+state 64
 
     (11) funciones -> funcion funciones .
 
     RCURLYBRACKET   reduce using rule 11 (funciones -> funcion funciones .)
 
 
-state 59
+state 65
 
     (13) masCodigo -> SEMICOLON codigo .
 
     RCURLYBRACKET   reduce using rule 13 (masCodigo -> SEMICOLON codigo .)
 
 
-state 60
+state 66
 
     (14) expresionAritmetica -> valor operador valor .
     (14) expresionAritmetica -> valor . operador valor
     (15) expresionAritmetica -> valor . operador expresionAritmetica
+    (57) expresionAritmetica -> valor . error
     (16) operador -> . PLUS
     (17) operador -> . MINUS
     (18) operador -> . MULT
@@ -948,22 +1023,23 @@ state 60
     (20) operador -> . MOD
 
     SEMICOLON       reduce using rule 14 (expresionAritmetica -> valor operador valor .)
-    PLUS            shift and go to state 38
-    MINUS           shift and go to state 39
-    MULT            shift and go to state 40
-    DIVIDE          shift and go to state 41
-    MOD             shift and go to state 42
+    error           shift and go to state 39
+    PLUS            shift and go to state 41
+    MINUS           shift and go to state 42
+    MULT            shift and go to state 43
+    DIVIDE          shift and go to state 44
+    MOD             shift and go to state 45
 
-    operador                       shift and go to state 36
+    operador                       shift and go to state 38
 
-state 61
+state 67
 
     (15) expresionAritmetica -> valor operador expresionAritmetica .
 
     SEMICOLON       reduce using rule 15 (expresionAritmetica -> valor operador expresionAritmetica .)
 
 
-state 62
+state 68
 
     (28) condicion -> valor operComp valor .
 
@@ -973,7 +1049,7 @@ state 62
     LCURLYBRACKET   reduce using rule 28 (condicion -> valor operComp valor .)
 
 
-state 63
+state 69
 
     (26) impresion -> PRINTLN NOT LPAREN . valores RPAREN
     (24) valores -> . valor
@@ -982,14 +1058,14 @@ state 63
     (22) valor -> . FLOAT
     (23) valor -> . ID
 
-    INTEGER         shift and go to state 25
-    FLOAT           shift and go to state 26
-    ID              shift and go to state 7
+    INTEGER         shift and go to state 27
+    FLOAT           shift and go to state 28
+    ID              shift and go to state 8
 
-    valores                        shift and go to state 69
-    valor                          shift and go to state 70
+    valores                        shift and go to state 75
+    valor                          shift and go to state 76
 
-state 64
+state 70
 
     (36) condiciones -> condicion conector condiciones .
 
@@ -997,7 +1073,7 @@ state 64
     LCURLYBRACKET   reduce using rule 36 (condiciones -> condicion conector condiciones .)
 
 
-state 65
+state 71
 
     (41) asignacion -> LET ID ASSIGN . valor
     (42) asignacion -> LET ID ASSIGN . condiciones
@@ -1010,6 +1086,7 @@ state 65
     (36) condiciones -> . condicion conector condiciones
     (14) expresionAritmetica -> . valor operador valor
     (15) expresionAritmetica -> . valor operador expresionAritmetica
+    (57) expresionAritmetica -> . valor error
     (45) estructuras -> . tupla
     (46) estructuras -> . array
     (28) condicion -> . valor operComp valor
@@ -1020,31 +1097,31 @@ state 65
     (49) array -> . LBRACKET valores RBRACKET
     (50) array -> . LBRACKET RBRACKET
 
-    INTEGER         shift and go to state 25
-    FLOAT           shift and go to state 26
-    ID              shift and go to state 7
-    TRUE            shift and go to state 27
-    FALSE           shift and go to state 28
-    LPAREN          shift and go to state 77
-    LBRACKET        shift and go to state 78
+    INTEGER         shift and go to state 27
+    FLOAT           shift and go to state 28
+    ID              shift and go to state 8
+    TRUE            shift and go to state 29
+    FALSE           shift and go to state 30
+    LPAREN          shift and go to state 83
+    LBRACKET        shift and go to state 84
 
-    valor                          shift and go to state 71
-    condiciones                    shift and go to state 72
-    expresionAritmetica            shift and go to state 73
-    estructuras                    shift and go to state 74
-    condicion                      shift and go to state 19
-    tupla                          shift and go to state 75
-    array                          shift and go to state 76
+    valor                          shift and go to state 77
+    condiciones                    shift and go to state 78
+    expresionAritmetica            shift and go to state 79
+    estructuras                    shift and go to state 80
+    condicion                      shift and go to state 21
+    tupla                          shift and go to state 81
+    array                          shift and go to state 82
 
-state 66
+state 72
 
     (53) estrFor -> FOR ID IN . ID LCURLYBRACKET codigo RCURLYBRACKET
     (54) estrFor -> FOR ID IN . ID LCURLYBRACKET codigo RCURLYBRACKET codigo
 
-    ID              shift and go to state 79
+    ID              shift and go to state 85
 
 
-state 67
+state 73
 
     (51) estrWhile -> WHILE condiciones LCURLYBRACKET . codigo RCURLYBRACKET
     (52) estrWhile -> WHILE condiciones LCURLYBRACKET . codigo RCURLYBRACKET codigo
@@ -1058,18 +1135,22 @@ state 67
     (9) codigo -> . funciones
     (14) expresionAritmetica -> . valor operador valor
     (15) expresionAritmetica -> . valor operador expresionAritmetica
+    (57) expresionAritmetica -> . valor error
     (26) impresion -> . PRINTLN NOT LPAREN valores RPAREN
+    (55) impresion -> . PRINT error
     (35) condiciones -> . condicion
     (36) condiciones -> . condicion conector condiciones
     (41) asignacion -> . LET ID ASSIGN valor
     (42) asignacion -> . LET ID ASSIGN condiciones
     (43) asignacion -> . LET ID ASSIGN expresionAritmetica
     (44) asignacion -> . LET ID ASSIGN estructuras
+    (59) asignacion -> . LET error
     (53) estrFor -> . FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET
     (54) estrFor -> . FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET codigo
     (51) estrWhile -> . WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET
     (52) estrWhile -> . WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET codigo
     (27) input -> . STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN
+    (58) input -> . STD error
     (10) funciones -> . funcion
     (11) funciones -> . funcion funciones
     (21) valor -> . INTEGER
@@ -1079,61 +1160,64 @@ state 67
     (37) condicion -> . TRUE
     (38) condicion -> . FALSE
     (1) funcion -> . FN ID LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKET
+    (56) funcion -> . FN error
 
-    PRINTLN         shift and go to state 18
-    LET             shift and go to state 20
-    FOR             shift and go to state 21
-    WHILE           shift and go to state 22
-    STD             shift and go to state 23
-    INTEGER         shift and go to state 25
-    FLOAT           shift and go to state 26
-    ID              shift and go to state 7
-    TRUE            shift and go to state 27
-    FALSE           shift and go to state 28
+    PRINTLN         shift and go to state 19
+    PRINT           shift and go to state 20
+    LET             shift and go to state 22
+    FOR             shift and go to state 23
+    WHILE           shift and go to state 24
+    STD             shift and go to state 25
+    INTEGER         shift and go to state 27
+    FLOAT           shift and go to state 28
+    ID              shift and go to state 8
+    TRUE            shift and go to state 29
+    FALSE           shift and go to state 30
     FN              shift and go to state 2
 
-    condiciones                    shift and go to state 11
-    codigo                         shift and go to state 80
-    expresionAritmetica            shift and go to state 9
-    impresion                      shift and go to state 10
-    asignacion                     shift and go to state 12
-    estrFor                        shift and go to state 13
-    estrWhile                      shift and go to state 14
-    input                          shift and go to state 15
-    funciones                      shift and go to state 16
-    valor                          shift and go to state 17
-    condicion                      shift and go to state 19
-    funcion                        shift and go to state 24
+    condiciones                    shift and go to state 12
+    codigo                         shift and go to state 86
+    expresionAritmetica            shift and go to state 10
+    impresion                      shift and go to state 11
+    asignacion                     shift and go to state 13
+    estrFor                        shift and go to state 14
+    estrWhile                      shift and go to state 15
+    input                          shift and go to state 16
+    funciones                      shift and go to state 17
+    valor                          shift and go to state 18
+    condicion                      shift and go to state 21
+    funcion                        shift and go to state 26
 
-state 68
+state 74
 
     (27) input -> STD COLON COLON . IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN
 
-    IO              shift and go to state 81
+    IO              shift and go to state 87
 
 
-state 69
+state 75
 
     (26) impresion -> PRINTLN NOT LPAREN valores . RPAREN
 
-    RPAREN          shift and go to state 82
+    RPAREN          shift and go to state 88
 
 
-state 70
+state 76
 
     (24) valores -> valor .
     (25) valores -> valor . COMMA valores
 
     RPAREN          reduce using rule 24 (valores -> valor .)
     RBRACKET        reduce using rule 24 (valores -> valor .)
-    COMMA           shift and go to state 83
+    COMMA           shift and go to state 89
 
 
-state 71
+state 77
 
     (41) asignacion -> LET ID ASSIGN valor .
     (14) expresionAritmetica -> valor . operador valor
     (15) expresionAritmetica -> valor . operador expresionAritmetica
+    (57) expresionAritmetica -> valor . error
     (28) condicion -> valor . operComp valor
     (16) operador -> . PLUS
     (17) operador -> . MINUS
@@ -1148,57 +1232,58 @@ state 71
     (34) operComp -> . LESSEQUALSTHAN
 
     SEMICOLON       reduce using rule 41 (asignacion -> LET ID ASSIGN valor .)
-    PLUS            shift and go to state 38
-    MINUS           shift and go to state 39
-    MULT            shift and go to state 40
-    DIVIDE          shift and go to state 41
-    MOD             shift and go to state 42
-    GREATERTHAN     shift and go to state 43
-    LESSTHAN        shift and go to state 44
-    EQUALITY        shift and go to state 45
-    DIFFERENTFROM   shift and go to state 46
-    GREATEREQUALSTHAN shift and go to state 47
-    LESSEQUALSTHAN  shift and go to state 48
+    error           shift and go to state 39
+    PLUS            shift and go to state 41
+    MINUS           shift and go to state 42
+    MULT            shift and go to state 43
+    DIVIDE          shift and go to state 44
+    MOD             shift and go to state 45
+    GREATERTHAN     shift and go to state 46
+    LESSTHAN        shift and go to state 47
+    EQUALITY        shift and go to state 48
+    DIFFERENTFROM   shift and go to state 49
+    GREATEREQUALSTHAN shift and go to state 50
+    LESSEQUALSTHAN  shift and go to state 51
 
-    operador                       shift and go to state 36
-    operComp                       shift and go to state 37
+    operador                       shift and go to state 38
+    operComp                       shift and go to state 40
 
-state 72
+state 78
 
     (42) asignacion -> LET ID ASSIGN condiciones .
 
     SEMICOLON       reduce using rule 42 (asignacion -> LET ID ASSIGN condiciones .)
 
 
-state 73
+state 79
 
     (43) asignacion -> LET ID ASSIGN expresionAritmetica .
 
     SEMICOLON       reduce using rule 43 (asignacion -> LET ID ASSIGN expresionAritmetica .)
 
 
-state 74
+state 80
 
     (44) asignacion -> LET ID ASSIGN estructuras .
 
     SEMICOLON       reduce using rule 44 (asignacion -> LET ID ASSIGN estructuras .)
 
 
-state 75
+state 81
 
     (45) estructuras -> tupla .
 
     SEMICOLON       reduce using rule 45 (estructuras -> tupla .)
 
 
-state 76
+state 82
 
     (46) estructuras -> array .
 
     SEMICOLON       reduce using rule 46 (estructuras -> array .)
 
 
-state 77
+state 83
 
     (47) tupla -> LPAREN . valores RPAREN
     (48) tupla -> LPAREN . RPAREN
@@ -1208,15 +1293,15 @@ state 77
     (22) valor -> . FLOAT
     (23) valor -> . ID
 
-    RPAREN          shift and go to state 85
-    INTEGER         shift and go to state 25
-    FLOAT           shift and go to state 26
-    ID              shift and go to state 7
+    RPAREN          shift and go to state 91
+    INTEGER         shift and go to state 27
+    FLOAT           shift and go to state 28
+    ID              shift and go to state 8
 
-    valores                        shift and go to state 84
-    valor                          shift and go to state 70
+    valores                        shift and go to state 90
+    valor                          shift and go to state 76
 
-state 78
+state 84
 
     (49) array -> LBRACKET . valores RBRACKET
     (50) array -> LBRACKET . RBRACKET
@@ -1226,45 +1311,45 @@ state 78
     (22) valor -> . FLOAT
     (23) valor -> . ID
 
-    RBRACKET        shift and go to state 87
-    INTEGER         shift and go to state 25
-    FLOAT           shift and go to state 26
-    ID              shift and go to state 7
+    RBRACKET        shift and go to state 93
+    INTEGER         shift and go to state 27
+    FLOAT           shift and go to state 28
+    ID              shift and go to state 8
 
-    valores                        shift and go to state 86
-    valor                          shift and go to state 70
+    valores                        shift and go to state 92
+    valor                          shift and go to state 76
 
-state 79
+state 85
 
     (53) estrFor -> FOR ID IN ID . LCURLYBRACKET codigo RCURLYBRACKET
     (54) estrFor -> FOR ID IN ID . LCURLYBRACKET codigo RCURLYBRACKET codigo
 
-    LCURLYBRACKET   shift and go to state 88
+    LCURLYBRACKET   shift and go to state 94
 
 
-state 80
+state 86
 
     (51) estrWhile -> WHILE condiciones LCURLYBRACKET codigo . RCURLYBRACKET
     (52) estrWhile -> WHILE condiciones LCURLYBRACKET codigo . RCURLYBRACKET codigo
 
-    RCURLYBRACKET   shift and go to state 89
+    RCURLYBRACKET   shift and go to state 95
 
 
-state 81
+state 87
 
     (27) input -> STD COLON COLON IO . COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN
 
-    COLON           shift and go to state 90
+    COLON           shift and go to state 96
 
 
-state 82
+state 88
 
     (26) impresion -> PRINTLN NOT LPAREN valores RPAREN .
 
     SEMICOLON       reduce using rule 26 (impresion -> PRINTLN NOT LPAREN valores RPAREN .)
 
 
-state 83
+state 89
 
     (25) valores -> valor COMMA . valores
     (24) valores -> . valor
@@ -1273,42 +1358,42 @@ state 83
     (22) valor -> . FLOAT
     (23) valor -> . ID
 
-    INTEGER         shift and go to state 25
-    FLOAT           shift and go to state 26
-    ID              shift and go to state 7
+    INTEGER         shift and go to state 27
+    FLOAT           shift and go to state 28
+    ID              shift and go to state 8
 
-    valor                          shift and go to state 70
-    valores                        shift and go to state 91
+    valor                          shift and go to state 76
+    valores                        shift and go to state 97
 
-state 84
+state 90
 
     (47) tupla -> LPAREN valores . RPAREN
 
-    RPAREN          shift and go to state 92
+    RPAREN          shift and go to state 98
 
 
-state 85
+state 91
 
     (48) tupla -> LPAREN RPAREN .
 
     SEMICOLON       reduce using rule 48 (tupla -> LPAREN RPAREN .)
 
 
-state 86
+state 92
 
     (49) array -> LBRACKET valores . RBRACKET
 
-    RBRACKET        shift and go to state 93
+    RBRACKET        shift and go to state 99
 
 
-state 87
+state 93
 
     (50) array -> LBRACKET RBRACKET .
 
     SEMICOLON       reduce using rule 50 (array -> LBRACKET RBRACKET .)
 
 
-state 88
+state 94
 
     (53) estrFor -> FOR ID IN ID LCURLYBRACKET . codigo RCURLYBRACKET
     (54) estrFor -> FOR ID IN ID LCURLYBRACKET . codigo RCURLYBRACKET codigo
@@ -1322,18 +1407,22 @@ state 88
     (9) codigo -> . funciones
     (14) expresionAritmetica -> . valor operador valor
     (15) expresionAritmetica -> . valor operador expresionAritmetica
+    (57) expresionAritmetica -> . valor error
     (26) impresion -> . PRINTLN NOT LPAREN valores RPAREN
+    (55) impresion -> . PRINT error
     (35) condiciones -> . condicion
     (36) condiciones -> . condicion conector condiciones
     (41) asignacion -> . LET ID ASSIGN valor
     (42) asignacion -> . LET ID ASSIGN condiciones
     (43) asignacion -> . LET ID ASSIGN expresionAritmetica
     (44) asignacion -> . LET ID ASSIGN estructuras
+    (59) asignacion -> . LET error
     (53) estrFor -> . FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET
     (54) estrFor -> . FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET codigo
     (51) estrWhile -> . WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET
     (52) estrWhile -> . WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET codigo
     (27) input -> . STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN
+    (58) input -> . STD error
     (10) funciones -> . funcion
     (11) funciones -> . funcion funciones
     (21) valor -> . INTEGER
@@ -1343,33 +1432,35 @@ state 88
     (37) condicion -> . TRUE
     (38) condicion -> . FALSE
     (1) funcion -> . FN ID LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKET
+    (56) funcion -> . FN error
 
-    PRINTLN         shift and go to state 18
-    LET             shift and go to state 20
-    FOR             shift and go to state 21
-    WHILE           shift and go to state 22
-    STD             shift and go to state 23
-    INTEGER         shift and go to state 25
-    FLOAT           shift and go to state 26
-    ID              shift and go to state 7
-    TRUE            shift and go to state 27
-    FALSE           shift and go to state 28
+    PRINTLN         shift and go to state 19
+    PRINT           shift and go to state 20
+    LET             shift and go to state 22
+    FOR             shift and go to state 23
+    WHILE           shift and go to state 24
+    STD             shift and go to state 25
+    INTEGER         shift and go to state 27
+    FLOAT           shift and go to state 28
+    ID              shift and go to state 8
+    TRUE            shift and go to state 29
+    FALSE           shift and go to state 30
     FN              shift and go to state 2
 
-    codigo                         shift and go to state 94
-    expresionAritmetica            shift and go to state 9
-    impresion                      shift and go to state 10
-    condiciones                    shift and go to state 11
-    asignacion                     shift and go to state 12
-    estrFor                        shift and go to state 13
-    estrWhile                      shift and go to state 14
-    input                          shift and go to state 15
-    funciones                      shift and go to state 16
-    valor                          shift and go to state 17
-    condicion                      shift and go to state 19
-    funcion                        shift and go to state 24
+    codigo                         shift and go to state 100
+    expresionAritmetica            shift and go to state 10
+    impresion                      shift and go to state 11
+    condiciones                    shift and go to state 12
+    asignacion                     shift and go to state 13
+    estrFor                        shift and go to state 14
+    estrWhile                      shift and go to state 15
+    input                          shift and go to state 16
+    funciones                      shift and go to state 17
+    valor                          shift and go to state 18
+    condicion                      shift and go to state 21
+    funcion                        shift and go to state 26
 
-state 89
+state 95
 
     (51) estrWhile -> WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET .
     (52) estrWhile -> WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET . codigo
@@ -1383,18 +1474,22 @@ state 89
     (9) codigo -> . funciones
     (14) expresionAritmetica -> . valor operador valor
     (15) expresionAritmetica -> . valor operador expresionAritmetica
+    (57) expresionAritmetica -> . valor error
     (26) impresion -> . PRINTLN NOT LPAREN valores RPAREN
+    (55) impresion -> . PRINT error
     (35) condiciones -> . condicion
     (36) condiciones -> . condicion conector condiciones
     (41) asignacion -> . LET ID ASSIGN valor
     (42) asignacion -> . LET ID ASSIGN condiciones
     (43) asignacion -> . LET ID ASSIGN expresionAritmetica
     (44) asignacion -> . LET ID ASSIGN estructuras
+    (59) asignacion -> . LET error
     (53) estrFor -> . FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET
     (54) estrFor -> . FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET codigo
     (51) estrWhile -> . WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET
     (52) estrWhile -> . WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET codigo
     (27) input -> . STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN
+    (58) input -> . STD error
     (10) funciones -> . funcion
     (11) funciones -> . funcion funciones
     (21) valor -> . INTEGER
@@ -1404,41 +1499,43 @@ state 89
     (37) condicion -> . TRUE
     (38) condicion -> . FALSE
     (1) funcion -> . FN ID LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKET
+    (56) funcion -> . FN error
 
     RCURLYBRACKET   reduce using rule 51 (estrWhile -> WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET .)
-    PRINTLN         shift and go to state 18
-    LET             shift and go to state 20
-    FOR             shift and go to state 21
-    WHILE           shift and go to state 22
-    STD             shift and go to state 23
-    INTEGER         shift and go to state 25
-    FLOAT           shift and go to state 26
-    ID              shift and go to state 7
-    TRUE            shift and go to state 27
-    FALSE           shift and go to state 28
+    PRINTLN         shift and go to state 19
+    PRINT           shift and go to state 20
+    LET             shift and go to state 22
+    FOR             shift and go to state 23
+    WHILE           shift and go to state 24
+    STD             shift and go to state 25
+    INTEGER         shift and go to state 27
+    FLOAT           shift and go to state 28
+    ID              shift and go to state 8
+    TRUE            shift and go to state 29
+    FALSE           shift and go to state 30
     FN              shift and go to state 2
 
-    condiciones                    shift and go to state 11
-    codigo                         shift and go to state 95
-    expresionAritmetica            shift and go to state 9
-    impresion                      shift and go to state 10
-    asignacion                     shift and go to state 12
-    estrFor                        shift and go to state 13
-    estrWhile                      shift and go to state 14
-    input                          shift and go to state 15
-    funciones                      shift and go to state 16
-    valor                          shift and go to state 17
-    condicion                      shift and go to state 19
-    funcion                        shift and go to state 24
+    condiciones                    shift and go to state 12
+    codigo                         shift and go to state 101
+    expresionAritmetica            shift and go to state 10
+    impresion                      shift and go to state 11
+    asignacion                     shift and go to state 13
+    estrFor                        shift and go to state 14
+    estrWhile                      shift and go to state 15
+    input                          shift and go to state 16
+    funciones                      shift and go to state 17
+    valor                          shift and go to state 18
+    condicion                      shift and go to state 21
+    funcion                        shift and go to state 26
 
-state 90
+state 96
 
     (27) input -> STD COLON COLON IO COLON . COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN
 
-    COLON           shift and go to state 96
+    COLON           shift and go to state 102
 
 
-state 91
+state 97
 
     (25) valores -> valor COMMA valores .
 
@@ -1446,43 +1543,43 @@ state 91
     RBRACKET        reduce using rule 25 (valores -> valor COMMA valores .)
 
 
-state 92
+state 98
 
     (47) tupla -> LPAREN valores RPAREN .
 
     SEMICOLON       reduce using rule 47 (tupla -> LPAREN valores RPAREN .)
 
 
-state 93
+state 99
 
     (49) array -> LBRACKET valores RBRACKET .
 
     SEMICOLON       reduce using rule 49 (array -> LBRACKET valores RBRACKET .)
 
 
-state 94
+state 100
 
     (53) estrFor -> FOR ID IN ID LCURLYBRACKET codigo . RCURLYBRACKET
     (54) estrFor -> FOR ID IN ID LCURLYBRACKET codigo . RCURLYBRACKET codigo
 
-    RCURLYBRACKET   shift and go to state 97
+    RCURLYBRACKET   shift and go to state 103
 
 
-state 95
+state 101
 
     (52) estrWhile -> WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET codigo .
 
     RCURLYBRACKET   reduce using rule 52 (estrWhile -> WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET codigo .)
 
 
-state 96
+state 102
 
     (27) input -> STD COLON COLON IO COLON COLON . STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN
 
-    STDIN           shift and go to state 98
+    STDIN           shift and go to state 104
 
 
-state 97
+state 103
 
     (53) estrFor -> FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET .
     (54) estrFor -> FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET . codigo
@@ -1496,18 +1593,22 @@ state 97
     (9) codigo -> . funciones
     (14) expresionAritmetica -> . valor operador valor
     (15) expresionAritmetica -> . valor operador expresionAritmetica
+    (57) expresionAritmetica -> . valor error
     (26) impresion -> . PRINTLN NOT LPAREN valores RPAREN
+    (55) impresion -> . PRINT error
     (35) condiciones -> . condicion
     (36) condiciones -> . condicion conector condiciones
     (41) asignacion -> . LET ID ASSIGN valor
     (42) asignacion -> . LET ID ASSIGN condiciones
     (43) asignacion -> . LET ID ASSIGN expresionAritmetica
     (44) asignacion -> . LET ID ASSIGN estructuras
+    (59) asignacion -> . LET error
     (53) estrFor -> . FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET
     (54) estrFor -> . FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET codigo
     (51) estrWhile -> . WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET
     (52) estrWhile -> . WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET codigo
     (27) input -> . STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN
+    (58) input -> . STD error
     (10) funciones -> . funcion
     (11) funciones -> . funcion funciones
     (21) valor -> . INTEGER
@@ -1517,104 +1618,106 @@ state 97
     (37) condicion -> . TRUE
     (38) condicion -> . FALSE
     (1) funcion -> . FN ID LPAREN RPAREN LCURLYBRACKET codigo RCURLYBRACKET
+    (56) funcion -> . FN error
 
     RCURLYBRACKET   reduce using rule 53 (estrFor -> FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET .)
-    PRINTLN         shift and go to state 18
-    LET             shift and go to state 20
-    FOR             shift and go to state 21
-    WHILE           shift and go to state 22
-    STD             shift and go to state 23
-    INTEGER         shift and go to state 25
-    FLOAT           shift and go to state 26
-    ID              shift and go to state 7
-    TRUE            shift and go to state 27
-    FALSE           shift and go to state 28
+    PRINTLN         shift and go to state 19
+    PRINT           shift and go to state 20
+    LET             shift and go to state 22
+    FOR             shift and go to state 23
+    WHILE           shift and go to state 24
+    STD             shift and go to state 25
+    INTEGER         shift and go to state 27
+    FLOAT           shift and go to state 28
+    ID              shift and go to state 8
+    TRUE            shift and go to state 29
+    FALSE           shift and go to state 30
     FN              shift and go to state 2
 
-    codigo                         shift and go to state 99
-    expresionAritmetica            shift and go to state 9
-    impresion                      shift and go to state 10
-    condiciones                    shift and go to state 11
-    asignacion                     shift and go to state 12
-    estrFor                        shift and go to state 13
-    estrWhile                      shift and go to state 14
-    input                          shift and go to state 15
-    funciones                      shift and go to state 16
-    valor                          shift and go to state 17
-    condicion                      shift and go to state 19
-    funcion                        shift and go to state 24
+    codigo                         shift and go to state 105
+    expresionAritmetica            shift and go to state 10
+    impresion                      shift and go to state 11
+    condiciones                    shift and go to state 12
+    asignacion                     shift and go to state 13
+    estrFor                        shift and go to state 14
+    estrWhile                      shift and go to state 15
+    input                          shift and go to state 16
+    funciones                      shift and go to state 17
+    valor                          shift and go to state 18
+    condicion                      shift and go to state 21
+    funcion                        shift and go to state 26
 
-state 98
+state 104
 
     (27) input -> STD COLON COLON IO COLON COLON STDIN . LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN
 
-    LPAREN          shift and go to state 100
+    LPAREN          shift and go to state 106
 
 
-state 99
+state 105
 
     (54) estrFor -> FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET codigo .
 
     RCURLYBRACKET   reduce using rule 54 (estrFor -> FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET codigo .)
 
 
-state 100
+state 106
 
     (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN . RPAREN DOT READLINE LPAREN REF MUT ID RPAREN
 
-    RPAREN          shift and go to state 101
-
-
-state 101
-
-    (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN . DOT READLINE LPAREN REF MUT ID RPAREN
-
-    DOT             shift and go to state 102
-
-
-state 102
-
-    (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT . READLINE LPAREN REF MUT ID RPAREN
-
-    READLINE        shift and go to state 103
-
-
-state 103
-
-    (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE . LPAREN REF MUT ID RPAREN
-
-    LPAREN          shift and go to state 104
-
-
-state 104
-
-    (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN . REF MUT ID RPAREN
-
-    REF             shift and go to state 105
-
-
-state 105
-
-    (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF . MUT ID RPAREN
-
-    MUT             shift and go to state 106
-
-
-state 106
-
-    (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT . ID RPAREN
-
-    ID              shift and go to state 107
+    RPAREN          shift and go to state 107
 
 
 state 107
 
-    (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID . RPAREN
+    (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN . DOT READLINE LPAREN REF MUT ID RPAREN
 
-    RPAREN          shift and go to state 108
+    DOT             shift and go to state 108
 
 
 state 108
+
+    (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT . READLINE LPAREN REF MUT ID RPAREN
+
+    READLINE        shift and go to state 109
+
+
+state 109
+
+    (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE . LPAREN REF MUT ID RPAREN
+
+    LPAREN          shift and go to state 110
+
+
+state 110
+
+    (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN . REF MUT ID RPAREN
+
+    REF             shift and go to state 111
+
+
+state 111
+
+    (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF . MUT ID RPAREN
+
+    MUT             shift and go to state 112
+
+
+state 112
+
+    (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT . ID RPAREN
+
+    ID              shift and go to state 113
+
+
+state 113
+
+    (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID . RPAREN
+
+    RPAREN          shift and go to state 114
+
+
+state 114
 
     (27) input -> STD COLON COLON IO COLON COLON STDIN LPAREN RPAREN DOT READLINE LPAREN REF MUT ID RPAREN .
 

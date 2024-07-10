@@ -2,6 +2,15 @@ import ply.yacc as yacc
 from lexer import tokens
 from datetime import datetime
 
+#Reglas semánticas
+#Mauricio Bravo
+#1. Revisar que nombres de funciones no se repitan
+#2. Permitir operaciones entre valores numéricos
+
+#Dereck Santamder
+#1. Verificar que las variables hayan sido incializadas
+#2. Revisar que las condiciones sean un valor tipo boolean
+
 def crearLogSemantico(usuarioGit):
     now = datetime.now()
     archivoSemantico = open("logs/semantico-" + usuarioGit + "-" + now.strftime("%d%m%Y-%Hh%M") + ".txt", "w")
@@ -99,7 +108,16 @@ def p_expresionAritmetica(p):
             errorSemantico = errorSemanticoDefault
             return
     else:
-        p[0] = [p[1]] + p[3]
+        if p[2] == '+':
+            p[0] = p[1] + p[3]
+        elif p[2] == '-':
+            p[0] = p[1] - p[3]
+        elif p[2] == '*':
+            p[0] = p[1] * p[3]
+        elif p[2] == '/':
+            p[0] = p[1] // p[3]
+        elif p[2] == '%':
+            p[0] = p[1] % p[3]
 
 def p_operador(p): # - Mauricio Bravo
     '''operador : PLUS
@@ -107,7 +125,8 @@ def p_operador(p): # - Mauricio Bravo
                 | MULT
                 | DIVIDE
                 | MOD'''
-    
+    p[0] = p[1]
+
 #IMPRESION CON CERO, UNO, O MAS ARGUMENTOS - Dereck Santander
 def p_valor(p):
     '''valor : INTEGER
@@ -155,7 +174,6 @@ def p_input(p):
 #condiciones con uno o más conectores - Mauricio Bravo
 def p_condicion(p):
     'condicion : valor operComp valor'
-
     #New
     if not isinstance(p[1],str) or p[1] in variables:
         pass
@@ -172,33 +190,59 @@ def p_condicion(p):
         print(errorSemantico)
         archivoSemantico.write(errorSemantico + "\n")
         errorSemantico = errorSemanticoDefault
+    
+    if p[2] == '>':
+        p[0] = p[1] > p[3]
+    elif p[2] == '<':
+        p[0] = p[1] < p[3]
+    elif p[2] == '==':
+        p[0] = p[1] == p[3]
+    elif p[2] == '!=':
+        p[0] = p[1] != p[3]
+    elif p[2] == '>=':
+        p[0] = p[1] < p[3]
+    elif p[2] == '<=':
+        p[0] = p[1] < p[3]
 
 
-def p_operComp(p): # - Mauricio Bravo
+def p_operComp(p): # - Mauricio Brav
     '''operComp : GREATERTHAN
                 | LESSTHAN
                 | EQUALITY
                 | DIFFERENTFROM
                 | GREATEREQUALSTHAN
                 | LESSEQUALSTHAN'''
+    p[0] = p[1]
 
 def p_condiciones(p): # - Mauricio Bravo
     '''condiciones : condicion
                    | condicion conector condiciones'''
     
     #New
-    if len(p) == 2:
-            p[0] = [p[1]]
+    if not isinstance(p[1],bool):
+        errorSemantico = f"Error semantico. El valor {p[1]} no es de tipo boolean"
+        print(errorSemantico)
+        archivoSemantico.write(errorSemantico + "\n")
+        errorSemantico = errorSemanticoDefault
     else:
-        p[0] = [p[1]] + p[3]
+        if len(p) == 2:
+            p[0] = p[1]
+        else:
+            if p[2] == '&&':
+                p[0] = p[1] and p[3]
+            else:
+                p[0] = p[1] or p[3]
+
 
 def p_condicionBool(p):# - Mauricio Bravo
     '''condicion : TRUE
                  | FALSE'''
+    p[0] = p[1]
 
 def p_conector(p): # - Mauricio Bravo
     '''conector : AND
                 | OR'''
+    p[0] = p[1]
 
 #definición de variables, todos los tipos, almacena resultados de expresiones/condicionales - Dereck Santander
 def p_asignacion(p):
@@ -208,6 +252,7 @@ def p_asignacion(p):
     
     #New
     variables[p[2]] = p[4] 
+
     
 #declarar estructuras de datos - Dereck Santander
 def p_asignacionEstructuras(p):
@@ -230,6 +275,8 @@ def p_tupla(p):# - Mauricio Bravo
 def p_tuplaVacia(p):# - Mauricio Bravo
     'tupla : LPAREN RPAREN'
 
+    p[0] = tuple(p[2])
+
 def p_array(p): # - Dereck Santander
     'array : LBRACKET valores RBRACKET'
 
@@ -239,12 +286,21 @@ def p_array(p): # - Dereck Santander
 def p_arrayVacio(p): # - Dereck Santander
     'array : LBRACKET RBRACKET'
 
+    p[0] = list(p[2])
+
 #declarar estructuras de control
 def p_estrWhile(p): # - Mauricio Bravo
     '''estrWhile : WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET
                  | WHILE condiciones LCURLYBRACKET codigo RCURLYBRACKET codigo '''
     
     #New
+    if not isinstance(p[2],bool):
+        errorSemantico = f"Error semantico. El valor {p[2]} no es de tipo boolean"
+        print(errorSemantico)
+        archivoSemantico.write(errorSemantico + "\n")
+        errorSemantico = errorSemanticoDefault
+    else: 
+        pass
     p[0] = p[4]
 
 def p_estrFor(p): # - Dereck Santander
@@ -252,7 +308,14 @@ def p_estrFor(p): # - Dereck Santander
                 | FOR ID IN ID LCURLYBRACKET codigo RCURLYBRACKET codigo'''
     
     #New
-    p[0] = p[4]
+    if not isinstance(p[4],str) or p[4] in variables:
+        pass
+    else:
+        errorSemantico = f"Error semantico. La variable {p[4]} no ha sido inicializada"
+        print(errorSemantico)
+        archivoSemantico.write(errorSemantico + "\n")
+        errorSemantico = errorSemanticoDefault
+    p[0] = p[6]
     
 
 # Error rule for syntax errors
@@ -276,12 +339,12 @@ def p_expresionAritmetica_error(p):
 
 
 def p_input_error(p):
-    'input: STD error'
+    'input : STD error'
     print("Syntax error in input statement. Bad expression")
 
 
 def p_asignacion_error(p):
-    'asignacion: LET error'
+    'asignacion : LET error'
     print("Syntax error in asignacion statement. Bad expression")
 
 # Build the parser

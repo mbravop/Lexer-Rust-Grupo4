@@ -1,0 +1,22 @@
+lp > fn main() { 1>3;}
+False
+lp > fn main() { 1>3 || 2!=2;}
+False
+lp > fn main() { 1<3;}
+True
+lp > fn main() { 1>3 || 2==2;}
+True
+lp > fn main() { 1>3 && 2==2;}
+False
+lp > fn main() { 4>3 && 2==2;}
+True
+lp > fn main() { 4>3 && 2==2 || 2>1 ;}
+True
+lp > fn main() { 1>3 && 2==2 || 2>1 ;}
+False
+lp > fn main() { 1+3-3 ;}
+None
+lp > fn main() { 1+3+2 ;}
+None
+lp > fn main() { 1+3;}
+None

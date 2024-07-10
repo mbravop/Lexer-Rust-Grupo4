@@ -1,0 +1,23 @@
+lp > fn main() { 1>3;}
+lp > fn main() { 1>3 || 2!=2;}
+Error semantico. La función main ya existe
+lp > fn main() { 1<3;}
+Error semantico. La función main ya existe
+lp > fn main() { 1>3 || 2==2;}
+Error semantico. La función main ya existe
+lp > fn main() { 1>3 && 2==2;}
+Error semantico. La función main ya existe
+lp > fn main() { 4>3 && 2==2;}
+Error semantico. La función main ya existe
+lp > fn main() { 4>3 && 2==2 || 2>1 ;}
+Error semantico. La función main ya existe
+lp > fn main() { 1>3 && 2==2 || 2>1 ;}
+Error semantico. La función main ya existe
+lp > fn main() { 1+3-3 ;}
+Error semantico. No se pueden operar valores de tipo no numérico
+Error semantico. La función main ya existe
+lp > fn main() { 1+3+2 ;}
+Error semantico. No se pueden operar valores de tipo no numérico
+Error semantico. La función main ya existe
+lp > fn main() { 1+3;}
+Error semantico. La función main ya existe
