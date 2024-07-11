@@ -1,0 +1,18 @@
+fn main(){
+    let x = 1>2;
+    let y = 3!=3;
+    let condicion = x && y;
+
+    while condicion {
+        println!("Hola Mundo");
+    }
+
+    fn funcion1(){
+        let tuplaPares = (2,4,6,8);
+        let indice = 0;
+        while indice < 5{
+            println!(par);
+            indice +=1;
+        }
+    }
+}
