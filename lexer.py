@@ -22,9 +22,9 @@ tokens = (
     'SEMICOLON',
     'GREATERTHAN',
     'LESSTHAN',
-    'GREATEREQUALSTHAN', 
-    'LESSEQUALSTHAN', 
-    'EQUALITY', 
+    'GREATEREQUALSTHAN',
+    'LESSEQUALSTHAN',
+    'EQUALITY',
     'DIFFERENTFROM',
     'AND',
     'OR',
@@ -34,7 +34,8 @@ tokens = (
     'LCURLYBRACKET',
     'RCURLYBRACKET',
     'SINGLEQUOTE',
-    'DOUBLEQUOTE'
+    'DOUBLEQUOTE',
+    'STRING'
 ) + tuple(reserved.values())
 
 #Expresiones regulares para tokens simples - Dereck
@@ -67,19 +68,25 @@ t_LCURLYBRACKET = r'\{'
 t_RCURLYBRACKET = r'\}'
 t_SEMICOLON = r';'
 
+
 #Expresiones regulares para tokens complejos - Dereck Santander
 def t_ID(t):
-    r'[_a-zA-Z]\w*'
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reserved.get(t.value, 'ID')
     return t
 
 def t_FLOAT(t):
-    r'(-?\d+\.\d*)|(-?\d*\.\d+)'
+    r'(\d+\.\d*)|(\d*\.\d+)'
     return t
 
 def t_INTEGER(t):
     r'\d+'
     t.value = int(t.value)
+    return t
+
+def t_STRING(t):
+    r'\".*?\"'
+    t.value = t.value[1:-1]
     return t
 
 def t_newline(t):
@@ -89,54 +96,27 @@ def t_newline(t):
 # A string containing ignored characters (spaces and tabs)
 t_ignore  = ' \t'
 
+
+errors = []
 # Error handling rule
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
+    errorMessage = "Illegal character '%s'" % t.value[0]
+    errors.append(errorMessage)
     t.lexer.skip(1)
 
 
-# Test it out
-algoritmo = '''fn main() {
-let num1 = 4;
-let num2 = 6;
-res = num1 + num2;
-if (res > 10){
-println!("Mayor que 10");
-}else{
-println!("No mayor");
-}
-'''
-
-algoritmo2 = '''
-    fn main() {
-        let mut contador = 1;
-
-        while contador <= 5 {
-            println!("El contador es: {}", contador);
-            contador += 1;
-        }
-
-        for numero in 1..=5 {
-            println!("El numero es: {}", numero);
-        }
-    }
-'''
 lexer = lex.lex()
 def ejecutarLexer(entradaLexer):
     salida = []
-    lexer.input(algoritmo)
+    lexer.input(entradaLexer)
     while True:
         tok = lexer.token()
         if not tok:
             break  # No more input
         salida.append(str(tok))
-    return "\n".join(salida)
 
-#Funcion para logs - Mauricio Bravo
-def crearLog(usuarioGit, entradaLexer):
-    now = datetime.now()
-    archivo = open("logs/lexico-"+usuarioGit+"-"+now.strftime("%d%m%Y-%Hh%M")+".txt","w")
-    archivo.write(entradaLexer+"\n")
-    archivo.write(ejecutarLexer(entradaLexer))
-    archivo.close()
+    if errors:
+        salida.append("\nErrores:\n"+"\n".join(errors))
+
+    return "\n".join(salida)
 
